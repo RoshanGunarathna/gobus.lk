@@ -1,0 +1,6 @@
+MONGO_URI=mongodb://localhost:27017/bus_reservation
+JWT_SECRET=your_jwt_secret_key
+JWT_REFRESH_SECRET=your_refresh_jwt_secret_key
+CLIENT_ORIGIN=http://localhost:3000
+PORT=5000
+
