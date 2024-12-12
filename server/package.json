@@ -1,7 +1,7 @@
 {
-    "name": "nodejs-auth-backend",
+    "name": "gobus.lk-backend",
     "version": "1.0.0",
-    "description": "A Node.js backend with authentication and profile management using JWT, AWS, Facebook, Google, and MongoDB.",
+    "description": "A Node.js backend for gobus.lk",
     "main": "src/server.js",
     "scripts": {
         "start": "node src/server.js",
