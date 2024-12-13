@@ -52,7 +52,7 @@
     background: #f43f3f;
     padding: 10px 28px 10px 28px;
     border-radius: 4px;
-    margin-left: 13px;
+    margin-right: 295px;
 }   
 
 .cancel-buttonmdl{
@@ -105,6 +105,9 @@
   .add-route-new{
     background-color: #0552BE;
     border-radius: 4px;
+    padding: 10px 28px 15px 28px;
+    margin-right: 329px;
+    margin-top: 17px;
   }
   .modal-overlay {
     position: fixed;
