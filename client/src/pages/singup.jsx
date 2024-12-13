@@ -24,7 +24,7 @@ export default function Signup() {
     if (!formData.password) {
       newErrors.password = 'Password is required.';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
+      newErrors.password = 'Password must be at least 8 characters.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -35,9 +35,10 @@ export default function Signup() {
     e.preventDefault();
     if (validate()) {
       console.log('Form submitted successfully', formData);
-      // Proceed with form submission logic (e.g., API calls)
+      // Proceed with form submission logic 
     }
   };
+
 
   // Handle input changes
   const handleChange = (e) => {
@@ -53,7 +54,7 @@ export default function Signup() {
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
         <form onSubmit={handleSubmit}>
-          <p className="signup-now">Sign up now..!</p>
+          <p className="signup-now">Sign up now</p>
 
           <input
             type="text"

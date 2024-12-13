@@ -1,3 +1,4 @@
+// src/pages/login.jsx
 import React, { useState } from 'react';
 import '../styles/auth.css';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ export default function Login() {
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Validation logic
   const validate = () => {
@@ -19,8 +21,8 @@ export default function Login() {
     }
     if (!formData.password) {
       newErrors.password = 'Password is required.';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -30,8 +32,11 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log('Login successful', formData);
-      // Proceed with form submission logic (e.g., API calls)
+      if (formData.email === 'admin@gmail.com' && formData.password === 'admin123') {
+        setSuccessMessage('Login successful!');
+      } else {
+        setErrors({ general: 'Invalid username or password.' });
+      }
     }
   };
 
@@ -49,7 +54,7 @@ export default function Login() {
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
         <form onSubmit={handleSubmit}>
-          <p className="login-now">Login Now..!</p>
+          <p className="login-now">Login</p>
 
           <input
             type="email"
@@ -70,6 +75,10 @@ export default function Login() {
             onChange={handleChange}
           />
           {errors.password && <p className="error-text">{errors.password}</p>}
+
+          {errors.general && <p className="error-text">{errors.general}</p>}
+
+          {successMessage && <p className="success-text">{successMessage}</p>}
 
           <p className="account-text">
             Don't have an account? <Link to="/"><span className="color">Sign Up</span></Link>
