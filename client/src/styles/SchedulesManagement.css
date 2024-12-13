@@ -1,0 +1,176 @@
+.schedules-management {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .add-schedule-btn {
+    background-color: #0552BE;
+    color: white;
+    padding: 15px 20px 15px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-left: 839px;
+}
+  
+  .add-schedule-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .schedules-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .schedules-table th,
+  .schedules-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .schedules-table th {
+    background-color: #F2F4FF;
+    font-weight: bold;
+  }
+  
+  .schedules-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .edit-btn{
+  background-color: #D1FCD5;
+  color: #19AA03;
+  border-radius: 27px;
+  padding: 7px 14px 7px 16px;
+  font-size: 9px;
+  }
+
+  .delete-btn{
+    background-color: #FCD1D2;
+    color: #FF0004;
+    border-radius: 47px;
+    padding: 7px 12px 7px 12px;
+    font-size: 9px;
+    margin-left: 11px;
+}
+  
+    .cmdelete-btn{
+        background: #f44336;
+        color: #eae4e4;
+        font-size: 13px;
+        padding: 10px 40px 10px 40px;
+        border-radius: 4px;
+        margin-left: 53px;
+        font-weight: bold;
+        margin-right: 292px;
+    }
+
+  .schedules-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 16px 60px 19px 39px;
+    border-radius: 8px;
+    width: 553px;
+    max-width: 90%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px;
+}
+
+  .modal-content h2 {
+    margin-top: 0;
+  }
+  
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-content label {
+    margin: 10px 0 5px;
+  }
+  
+  .modal-content input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  
+  .update-btn {
+    background-color: #28a745;
+    color: #fff;
+    padding: 13px 28px 13px 28px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 310px;
+}
+
+.cancel-btn {
+    background-color: #c4c4c4;
+    color: #222222;
+    padding: 11px 47px 15px 47px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: -18px;
+}
+
+.add-btn{
+    background-color: #0552BE;
+    border-radius: 4px;
+    padding: 11px 47px 15px 47px;
+    margin-right: 291px;
+}
+  
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s;
+  }
+  
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0;
+    }
+    10%, 90% {
+      opacity: 1;
+    }
+  }
+  
