@@ -1,26 +1,23 @@
-const jwt = require('jsonwebtoken'); 
-const User = require('./models/User');
+const jwt = require('jsonwebtoken');
+const jwtConfig = require('../config/jwt');
+const CustomError = require('../utils/customError');
 
-const authMiddleware = (roles = []) => {
-  return async (req, res, next) => {
-    const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+const protect = (roles = []) => (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
+        throw new CustomError("Access token missing", 401);
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded;
-      if (roles.length && !roles.includes(decoded.role)) {
-          return res.status(403).json({ message: "Access denied" });
-      }
-      next();
-    } catch (err) {
-      console.error(err);
-      res.status(401).json({ message: 'Token is not valid' });
+    const decoded = jwt.verify(token, jwtConfig.accessTokenSecret);
+    req.user = decoded;
+
+    // Check role-based access
+    if (roles.length && !roles.includes(decoded.role)) {
+        throw new CustomError("Access denied", 403);
     }
-  };
+
+    next();
 };
 
-module.exports = authMiddleware;
+module.exports = { protect };
