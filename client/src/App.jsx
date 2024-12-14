@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import Booking from './pages/BookingManagement.jsx';
 import Dashboard from './pages/Dashboard';
 import UserManagement from './pages/UserManagement';
 import RoutesManagement from './pages/RoutesManagement';
@@ -11,10 +12,13 @@ import Login from './pages/login.jsx';
 import './App.css';
 
 function App() {
+  const userType = 'operator'; 
+
   return (
     <Router>
       <div className="app-container">
-        <Sidebar />
+        {}
+        <Sidebar userType={userType} />
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -22,6 +26,10 @@ function App() {
             <Route path="/route-management" element={<RoutesManagement />} />
             <Route path="/schedules-management" element={<SchedulesManagement />} />
             <Route path="/bus-management" element={<BusManagement />} />
+            <Route path="/booking-management" element={<Booking />} />
+
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>
