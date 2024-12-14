@@ -371,7 +371,7 @@ function SchedulesManagement() {
               <button className="cmdelete-btn" onClick={handleDeleteConfirm}>
                 Delete
               </button>
-              <button className="cancel-btn" onClick={handleDeleteCancel}>
+              <button className="cancel-btn2" onClick={handleDeleteCancel}>
                 Cancel
               </button>
             </div>
