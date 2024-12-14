@@ -5,6 +5,7 @@
   
   h1 {
     font-size: 24px;
+    margin-left: 37px;
     margin-bottom: 20px;
   }
   
@@ -137,15 +138,23 @@
 }
 
 .cancel-btn {
-    background-color: #c4c4c4;
-    color: #222222;
+    background-color: #ff5252;
+    color: #ffffff;
     padding: 11px 47px 15px 47px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-right: -18px;
 }
-
+.cancel-btn2 {
+  background-color: #cecccc;
+  color: #000000;
+  padding: 11px 47px 15px 47px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: -18px;
+}
 .add-btn{
     background-color: #0552BE;
     border-radius: 4px;
