@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Booking from './pages/BookingManagement';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/profileManagement';
 import UserManagement from './pages/UserManagement';
 import RoutesManagement from './pages/RoutesManagement';
 import SchedulesManagement from './pages/SchedulesManagement';
@@ -12,7 +13,7 @@ import Login from './pages/login';
 import './App.css';
 
 function App() {
-  const userType = 'admin'; 
+  const userType = 'commuter'; 
 
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
             <Route path="/schedules-management" element={<SchedulesManagement />} />
             <Route path="/bus-management" element={<BusManagement />} />
             <Route path="/booking-management" element={<Booking userType={userType} />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
           </Routes>
