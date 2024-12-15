@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/auth.css';
 import { Link } from 'react-router-dom';
+import { login } from '../api/authApi';
+import useAuth from '../hooks/useAuth';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ export default function Login() {
     password: '',
   });
   const [errors, setErrors] = useState({});
+
 
   // Validation logic
   const validate = () => {
@@ -27,12 +30,26 @@ export default function Login() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log('Login successful', formData);
-      // Proceed with form submission logic (e.g., API calls)
-    }
+
+    try {
+      if (validate()) {
+        const user = await login(email, password);
+        loginUser(user); // Set user in context
+        setSuccessMessage('Login successful!');
+        navigate('/dashboard'); // Redirect after login
+      }
+      
+     
+  } catch (err) {
+      console.error(err);
+      //alert('Invalid credentials');
+      setErrors({ general: 'Invalid username or password.' });
+  }
+    
+    
+
   };
 
   // Handle input changes
