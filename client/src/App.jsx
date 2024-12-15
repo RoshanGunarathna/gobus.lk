@@ -21,7 +21,9 @@ function App() {
         <Sidebar userType={userType} />
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+            {/* <Route path="/" element={<Dashboard />} /> */}
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/route-management" element={<RoutesManagement />} />
             <Route path="/schedules-management" element={<SchedulesManagement />} />
@@ -29,7 +31,7 @@ function App() {
             <Route path="/booking-management" element={<Booking userType={userType} />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+            {/* <Route path="/login" element={<Login />} /> */}
           </Routes>
         </div>
       </div>
