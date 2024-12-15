@@ -1,12 +1,17 @@
 const handleResponse = (res, statusCode, message, data) => {
-    res.status(statusCode).json({
+  const response = {
       success: true,
       message,
-      data,
-    });
   };
-  
-  module.exports = {
-    handleResponse,
-  };
-  
+
+  // Add data key only if it is not null or undefined
+  if (data !== null && data !== undefined) {
+      response.data = data;
+  }
+
+  res.status(statusCode || 200).json(response);
+};
+
+module.exports = {
+  handleResponse,
+};

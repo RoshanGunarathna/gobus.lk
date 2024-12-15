@@ -1,0 +1,160 @@
+/* styles/auth.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9;
+}
+
+.container {
+  display: flex;
+  width: 116%;
+  height: 541px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: -77px;
+}
+
+.left-section {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  margin-top: -388px;
+  margin-left: 77px;
+  width: 148px;
+  height: 54px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.login-now{
+  color: black;
+  margin-left: -122px;
+  font-weight: bold;
+}
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 12px;
+  margin-left: -100px;
+  margin-bottom: -24px;
+}
+
+.input-field {
+  width: 364px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-left: -276px;
+  padding: 13px 10px 13px 10px;
+  background: none;
+  border: 1px solid #afafaf;
+  color: black;
+}
+
+.input{
+  width: 364px;
+  margin-left: -274px;
+  margin-top: 36px;
+  display: flex;
+  padding: 13px 10px 13px 10px;
+  background: none;
+  border: 1px solid #afafaf;
+  border-radius: 4px;
+  color: black;
+
+}
+
+.login-button {
+    width: 264px;
+    padding: 13px 10px 13px 10px;
+    background-color: #0552BE;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: -73px;
+    margin-left: -298px;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.right-section {
+  flex: 1;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+}
+
+.form-label {
+  color: black;
+  align-self: flex-start;
+}
+
+.side-image {
+  width: 489px;
+  height: 560px;
+  margin-right: -20px;
+  margin-top: -12px;
+  margin-bottom: 0px;
+  margin-left: -99px;
+
+}
+
+.signup-now {
+  color: rgb(0, 0, 0);
+  margin-left: -127px;
+  font-weight: bold;
+  margin-bottom: 35px;
+  margin-top: 95px;
+}
+
+.left{
+  margin-left: 10px;
+}
+
+.account-text {
+  color: black;
+  margin-left: -118px;
+}
+
+.color{
+  color: #0552BE;
+}
+
+.button {
+  margin-left: -273px;
+  color: #ffffff;
+  background: #0552BE;
+  padding: 13px 20px; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-weight: bold;
+  text-decoration: none; 
+  border-radius: 5px; 
+  width: 385px; 
+  margin-top: 16px;
+}
