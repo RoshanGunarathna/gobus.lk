@@ -1,7 +1,8 @@
-// src/pages/login.jsx
 import React, { useState } from 'react';
 import '../styles/auth.css';
 import { Link } from 'react-router-dom';
+import { login } from '../api/authApi';
+import useAuth from '../hooks/useAuth';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ export default function Login() {
     password: '',
   });
   const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
+
 
   // Validation logic
   const validate = () => {
@@ -21,23 +22,34 @@ export default function Login() {
     }
     if (!formData.password) {
       newErrors.password = 'Password is required.';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters.';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      if (formData.email === 'admin@gmail.com' && formData.password === 'admin123') {
+
+    try {
+      if (validate()) {
+        const user = await login(email, password);
+        loginUser(user); // Set user in context
         setSuccessMessage('Login successful!');
-      } else {
-        setErrors({ general: 'Invalid username or password.' });
+        navigate('/dashboard'); // Redirect after login
       }
-    }
+      
+     
+  } catch (err) {
+      console.error(err);
+      //alert('Invalid credentials');
+      setErrors({ general: 'Invalid username or password.' });
+  }
+    
+    
+
   };
 
   // Handle input changes
@@ -54,7 +66,7 @@ export default function Login() {
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
         <form onSubmit={handleSubmit}>
-          <p className="login-now">Login</p>
+          <p className="login-now">Login Now..!</p>
 
           <input
             type="email"
@@ -75,10 +87,6 @@ export default function Login() {
             onChange={handleChange}
           />
           {errors.password && <p className="error-text">{errors.password}</p>}
-
-          {errors.general && <p className="error-text">{errors.general}</p>}
-
-          {successMessage && <p className="success-text">{successMessage}</p>}
 
           <p className="account-text">
             Don't have an account? <Link to="/"><span className="color">Sign Up</span></Link>
