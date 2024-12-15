@@ -24,7 +24,7 @@ function Sidebar({ userType }) {
       case 'commuter':
         return [
           { path: '/', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
-          { path: '/booking-management', label: 'Booking Management', icon: 'https://i.imgur.com/VPo06lE.png' },
+          { path: '/booking-management', label: 'My Booking', icon: 'https://i.imgur.com/VPo06lE.png' },
           { path: '/profile', label: 'Profile', icon: 'https://i.imgur.com/Xs88ZWL.png' },
         ];
       default:
@@ -39,7 +39,7 @@ function Sidebar({ userType }) {
       case 'operator':
         return 'Bus Operator Panel';
       case 'commuter':
-        return 'Commuter section';
+        return 'Commuter Section';
       default:
         return 'Panel';
     }
@@ -50,8 +50,8 @@ function Sidebar({ userType }) {
 
   return (
     <div className="sidebar">
-      <img src="https://i.imgur.com/4SIV82G.png" className="img-logo" alt="Logo"  />
-      <h2 className="style">{panelLabel}</h2> {/* Dynamic label based on userType */}
+      <img src="https://i.imgur.com/4SIV82G.png" className="img-logo" alt="Logo" />
+      <h2 className="style">{panelLabel}</h2>
       <nav>
         <ul>
           {sidebarItems.map((item, index) => (
