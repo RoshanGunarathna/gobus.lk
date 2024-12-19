@@ -1,99 +1,77 @@
-import React, { useState } from 'react';
-import '../styles/auth.css';
-import { Link } from 'react-router-dom';
-import { login } from '../api/authApi';
-import useAuth from '../hooks/useAuth';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../api/authApi";
+import Cookies from "js-cookie";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState({});
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
+  const { setUser } = useContext(AuthContext); // Access setUser from context
+  const navigate = useNavigate();
 
-  // Validation logic
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.email) {
-      newErrors.email = 'Email is required.';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid.';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required.';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      if (validate()) {
-        const user = await login(email, password);
-        loginUser(user); // Set user in context
-        setSuccessMessage('Login successful!');
-        navigate('/dashboard'); // Redirect after login
-      }
-      
-     
-  } catch (err) {
-      console.error(err);
-      //alert('Invalid credentials');
-      setErrors({ general: 'Invalid username or password.' });
-  }
-    
-    
+      const response = await login(email, password);
+      const userData = {
+        email: response.data.email,
+        userType: response.data.userType,
+      };
 
-  };
+      // Set user state globally
+      setUser(userData);
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+      // Store access token in cookie and persist user data in localStorage
+      Cookies.set("accessToken", response.data.accessToken, { expires: 7 });
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message || "Login failed");
+    }
   };
 
   return (
     <div className="container">
       <div className="left-section">
-        <img src="https://i.imgur.com/ceOWZEe.png" alt="Side Image" className="side-image" />
+        <img src="https://i.imgur.com/ceOWZEe.png" alt="Bus" className="side-image" />
       </div>
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
-        <form onSubmit={handleSubmit}>
-          <p className="login-now">Login Now..!</p>
+
+        {error && <p className="error-message">{error}</p>}
+        <form className="form" onSubmit={handleLogin}>
+          <h2 className="signup-now">Login Now!</h2>
 
           <input
             type="email"
-            name="email"
-            placeholder="Enter your Email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             className="input"
-            value={formData.email}
-            onChange={handleChange}
           />
-          {errors.email && <p className="error-text">{errors.email}</p>}
-
           <input
             type="password"
-            name="password"
-            placeholder="Enter your Password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
             className="input"
-            value={formData.password}
-            onChange={handleChange}
           />
-          {errors.password && <p className="error-text">{errors.password}</p>}
-
-          <p className="account-text">
-            Don't have an account? <Link to="/"><span className="color">Sign Up</span></Link>
-          </p>
-          <button type="submit" className="button">Login</button>
+          <button type="submit" className="button">
+            Login
+          </button>
         </form>
+        <p className="signup-text">
+          You do not have an account? <a href="/signup">Sign Up</a>
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
