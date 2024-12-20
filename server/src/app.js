@@ -3,10 +3,12 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
-const rateLimit = require("express-rate-limit");
-const cors = require("cors");
-const helmet = require("helmet");
-const cookieParser = require("cookie-parser");
+const rateLimit = require('express-rate-limit');
+const cors = require('cors');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+require('dotenv').config(); // Load environment variables
+const CustomError = require('./utils/customError');
 
 
 const app = express();
@@ -15,26 +17,53 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json()); // Parse JSON request bodies
+app.use(cookieParser()); // Parse cookies
 
-// app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }));
+// Allowed origins for CORS
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
+: [];
 
-// app.use(helmet());
 
-// app.use(
-//     rateLimit({
-//         windowMs: 15 * 60 * 1000, // 15 minutes
-//         max: 100, // Limit each IP to 100 requests
-//     })
-// );
+// CORS configuration
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            // Allow requests with no origin (e.g., mobile apps or Postman)
+          
+            if ( !origin || allowedOrigins.includes(origin)) {
+                console.log(origin);
+                callback(null, true);
+            } else {
+                callback( new CustomError("Not allowed by CORS", 401));
+                
+            }
+        },
+        credentials: true, // Allow cookies
+    })
+);
 
+
+// Security middleware
+app.use(helmet()); // Adds security headers
+
+// Rate limiting middleware
+app.use(
+    rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // Limit each IP to 100 requests per 15 minutes
+        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+        legacyHeaders: false, // Disable `X-RateLimit-*` headers
+    })
+);
 
 // Routes
-app.use('/api/auth', authRoutes);
-// app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes); // Authentication-related routes
+app.use('/api/user', userRoutes); // User-related routes
 
-// Error handling middleware
+// Error handling middleware (custom middleware for handling errors globally)
 app.use(errorMiddleware);
 
+// Export the app module
 module.exports = app;
