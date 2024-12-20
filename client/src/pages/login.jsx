@@ -1,51 +1,56 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../api/authApi";
-import Cookies from "js-cookie";
-import { AuthContext } from "../context/AuthContext"; // Import AuthContext
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../api/authApi';
+import { updateUser } from '../redux/userSlice';
+
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [toastMessage, setToastMessage] = useState(null);
 
-  const { setUser } = useContext(AuthContext); // Access setUser from context
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+   const { loading, error, isAuthenticated, user } = useSelector((state) => state.user);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+
     try {
+     // dispatch(loading());
       const response = await login(email, password);
+    
+
+      // Extract user data from the nested structure
       const userData = {
-        email: response.data.email,
-        userType: response.data.userType,
+        id: response.user._id,
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role,
       };
 
-      // Set user state globally
-      setUser(userData);
 
-      // Store access token in cookie and persist user data in localStorage
-      Cookies.set("accessToken", response.data.accessToken, { expires: 7 });
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      navigate("/dashboard");
+      // Update Redux store directly
+      dispatch(updateUser(userData));
     } catch (err) {
-      setError(err.message || "Login failed");
+      console.error('Login Error:', err);
+      //dispatch(loginFailure(err.message || 'Login failed'));
+      showToast(err.message || 'Login failed. Please check your credentials.');
     }
   };
 
   return (
     <div className="container">
+      {toastMessage && <div className="toast">{toastMessage}</div>}
       <div className="left-section">
         <img src="https://i.imgur.com/ceOWZEe.png" alt="Bus" className="side-image" />
       </div>
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
-
-        {error && <p className="error-message">{error}</p>}
         <form className="form" onSubmit={handleLogin}>
           <h2 className="signup-now">Login Now!</h2>
-
           <input
             type="email"
             placeholder="Enter Email"
@@ -62,13 +67,17 @@ const Login = () => {
             required
             className="input"
           />
-          <button type="submit" className="button">
-            Login
+          <p className="signup-text">
+            You do not have an account? <a href="/signup">Sign Up</a>
+          </p>
+          <button 
+            type="submit" 
+            className="button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <p className="signup-text">
-          You do not have an account? <a href="/signup">Sign Up</a>
-        </p>
       </div>
     </div>
   );

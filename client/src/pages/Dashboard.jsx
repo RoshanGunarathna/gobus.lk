@@ -1,21 +1,20 @@
+// src/pages/Dashboard.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { removeUser } from '../redux/userSlice';
 
 function Dashboard() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Clear stored tokens
-    Cookies.remove('accessToken');
-    Cookies.remove('refreshToken');
-
-    // Clear user data from localStorage
-    localStorage.removeItem('user');
-
+    // Dispatch logout action
+    dispatch(removeUser());
     // Redirect to login
-    navigate('/');
+    navigate('/login'); 
   };
+  
 
   return (
     <div>

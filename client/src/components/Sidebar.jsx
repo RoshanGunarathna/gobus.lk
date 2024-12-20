@@ -1,8 +1,19 @@
+// src/components/Sidebar.jsx
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
-function Sidebar({ userType }) {
+const formatRole = (role) => {
+  return role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Guest';
+};
+
+function Sidebar() {
+  // Get the user role from Redux state
+  const userType = useSelector((state) => state.auth?.user?.role || 'guest');
+
+  console.log('User Role:', formatRole(userType));
+
   const getSidebarItems = () => {
     switch (userType) {
       case 'admin':
@@ -28,7 +39,7 @@ function Sidebar({ userType }) {
           { path: '/profile', label: 'Profile', icon: 'https://i.imgur.com/Xs88ZWL.png' },
         ];
       default:
-        return [];
+        return []; // Return an empty array for invalid userType
     }
   };
 
@@ -41,7 +52,7 @@ function Sidebar({ userType }) {
       case 'commuter':
         return 'Commuter Section';
       default:
-        return 'Panel';
+        return 'Guest Panel';
     }
   };
 
@@ -54,7 +65,7 @@ function Sidebar({ userType }) {
       <h2 className="style">{panelLabel}</h2>
       <nav>
         <ul>
-          {sidebarItems.map((item, index) => (
+          {sidebarItems?.map((item, index) => (
             <li key={index}>
               <NavLink to={item.path} className="sidebar-link" activeClassName="active-link">
                 <img src={item.icon} className="img-icon" alt={item.label} />

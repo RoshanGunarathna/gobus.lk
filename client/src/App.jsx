@@ -1,45 +1,121 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+// src/App.jsx
+import React from "react";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { useSelector } from "react-redux";
 import Signup from "./pages/singup";
 import Login from "./pages/login";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
-import { AuthProvider } from "./context/AuthContext";
+import { Navigate } from 'react-router-dom';
 
-function App() {
-  const [user, setUser] = useState(null);
+// const ProtectedRoute = ({ user, children }) => {
+//   if (!user) return <Navigate to="/login" />;
+//   return children;
+// };
 
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, []);
+const ProtectedRoute = ({ user, children }) => {
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+  return children;
+};
 
-
+function AppContent() {
+  const user = useSelector((state) => {
+    console.log(`State ??? :: ${JSON.stringify(state.user)}`);
+    return state.user.user;
+  });
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className="app-container">
-          {user && <Sidebar userType={user.userType} />} {/* Pass userType as a prop */}
-          <Routes>
-            <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/dashboard"
-              element={user ? <Dashboard /> : <Navigate to="/" />} /* Secure route */
-            />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+    <div className="app-container">
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute user={user}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </div>
+  );
+}
+
+
+// function AppContent() {
+//   const user = useSelector(state =>{
+//     console.log(`State ??? :: ${state.user}`);
+//    return state.user;
+//   } );
+
+//   return (
+//     <div className="app-container">
+    
+//       <Routes>
+//         <Route
+//           path="/"
+//           element={ user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
+//         />
+//         <Route path="/dashboard" element={
+//             <ProtectedRoute user={user}>
+//               <Dashboard />
+//             </ProtectedRoute>
+//           } />
+//         <Route path="/login" element={<Login />} />
+//         <Route path="/signup" element={<Signup />} />
+//       </Routes>
+//     </div>
+//   );
+// }
+
+// function AppContent() {
+//   const user = useSelector((state) => {
+//     console.log(`State ??? :: ${JSON.stringify(state.user)}`);
+//     return state.user;
+//   });
+
+//   return (
+//     <div className="app-container">
+//       <Routes>
+//         <Route
+//           path="/"
+//           element={
+//             user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+//           }
+//         />
+//         <Route
+//           path="/dashboard"
+//           element={
+//             <ProtectedRoute user={user}>
+//               <Dashboard />
+//             </ProtectedRoute>
+//           }
+//         />
+//         <Route path="/login" element={<Login />} />
+//         <Route path="/signup" element={<Signup />} />
+//       </Routes>
+//     </div>
+//   );
+// }
+
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
 export default App;
+
+  /* {user && <Sidebar />} */

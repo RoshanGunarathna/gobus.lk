@@ -7,6 +7,8 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+require('dotenv').config(); // Load environment variables
+const CustomError = require('./utils/customError');
 
 const app = express();
 
@@ -18,31 +20,27 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies
 
 // Allowed origins for CORS
-const allowedOrigins = [
-    'http://localhost:5173', // Vite development server
-    'http://localhost:3000', // React development server (if needed)
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
+: [];
 
 // CORS configuration
 app.use(
     cors({
         origin: (origin, callback) => {
             // Allow requests with no origin (e.g., mobile apps or Postman)
-            if (!origin || allowedOrigins.includes(origin)) {
+          
+            if ( !origin || allowedOrigins.includes(origin)) {
+                console.log(origin);
                 callback(null, true);
             } else {
-                callback(new Error('Not allowed by CORS'));
+                callback( new CustomError("Not allowed by CORS", 401));
             }
         },
         credentials: true, // Allow cookies
     })
 );
 
-// Debugging middleware to log incoming requests
-app.use((req, res, next) => {
-    console.log(`Incoming request from origin: ${req.headers.origin}`);
-    next();
-});
 
 // Security middleware
 app.use(helmet()); // Adds security headers
