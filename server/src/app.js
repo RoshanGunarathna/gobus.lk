@@ -9,6 +9,8 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 require('dotenv').config(); // Load environment variables
 const CustomError = require('./utils/customError');
+require('dotenv').config(); // Load environment variables
+const CustomError = require('./utils/customError');
 
 const app = express();
 
@@ -23,6 +25,9 @@ app.use(cookieParser()); // Parse cookies
 const allowedOrigins = process.env.ALLOWED_ORIGINS
 ? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
 : [];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
+: [];
 
 // CORS configuration
 app.use(
@@ -34,6 +39,7 @@ app.use(
                 console.log(origin);
                 callback(null, true);
             } else {
+                callback( new CustomError("Not allowed by CORS", 401));
                 callback( new CustomError("Not allowed by CORS", 401));
             }
         },
