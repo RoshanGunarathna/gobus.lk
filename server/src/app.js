@@ -25,9 +25,7 @@ app.use(cookieParser()); // Parse cookies
 const allowedOrigins = process.env.ALLOWED_ORIGINS
 ? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
 : [];
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
-: [];
+
 
 // CORS configuration
 app.use(
