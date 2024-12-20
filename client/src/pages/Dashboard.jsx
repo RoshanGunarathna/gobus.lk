@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { removeUser } from '../redux/userSlice';
+import Sidebar from '../components/Sidebar';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function Dashboard() {
 
   return (
     <div>
+      <Sidebar />
       <h1>Dashboard</h1>
       <p>Welcome to the Dashboard!</p>
       <button onClick={handleLogout} style={styles.logoutButton}>

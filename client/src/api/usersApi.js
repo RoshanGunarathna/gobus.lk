@@ -1,6 +1,12 @@
 import axiosInstance from './axiosInstance';
 
+
+
 export const getUserData = async () => {
-    const response = await axiosInstance.get(`/users/getAll`);
-    return response.data.users; // Return user data
-};
+    try {
+      const response = await axiosInstance.get(`/users/getAll`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "An error." };
+    }
+  };

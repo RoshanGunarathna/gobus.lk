@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Signup from "./pages/singup";
 import Login from "./pages/login";
@@ -19,6 +19,7 @@ const ProtectedRoute = ({ user, children }) => {
 
 function AppContent() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const user = useSelector((state) => {
     console.log(`State ??? :: ${JSON.stringify(state.user.user)}`);
@@ -30,9 +31,10 @@ function AppContent() {
   useEffect(() => {
     if (user) {
       navigate("/dashboard");
-    } else {
+    } 
+   else if(location.pathname != "/signup"){
       navigate("/login");
-    }
+    } 
   }, [user, navigate]);
 
   return (

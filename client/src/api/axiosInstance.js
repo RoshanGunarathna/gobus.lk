@@ -5,8 +5,8 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
 
-    //baseURL: 'http://localhost:5000/api', // API Base URL
-    baseURL: 'http://192.168.43.126:5000/api', // API Base URL
+    baseURL: 'http://localhost:5000/api', // API Base URL
+   
     withCredentials: true, // Send cookies with requests if required
     headers: {
         'Content-Type': 'application/json', // Default header for JSON requests
@@ -37,14 +37,28 @@ axiosInstance.interceptors.response.use(
       // Handle unauthorized access
       localStorage.removeItem('token');
     
-      refreshAccessToken();
+      const token = refreshAccessToken();
+      if(token){
+        //Previous route
+      }
       
 
-            // Redirect to login or show error
+        
 
     }
     return Promise.reject(error);
   }
 );
+
+
+const refreshAccessToken = async () => {
+  try {
+    const response = await axiosInstance.post(`auth/refreshToken`);
+    localStorage.setItem('token', response.data.accessToken)
+    return response.data.accessToken;
+  } catch (error) {
+    throw error.response?.data || { message: "An error." };
+  }
+};
 
 export default axiosInstance;

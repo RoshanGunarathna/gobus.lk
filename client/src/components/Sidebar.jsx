@@ -10,7 +10,7 @@ const formatRole = (role) => {
 
 function Sidebar() {
   // Get the user role from Redux state
-  const userType = useSelector((state) => state.auth?.user?.role || 'guest');
+  const userType = useSelector((state) => state.user?.user?.role || 'guest');
 
   console.log('User Role:', formatRole(userType));
 

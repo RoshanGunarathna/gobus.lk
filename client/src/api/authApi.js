@@ -29,13 +29,6 @@ export const login = async (email, password) => {
 };
 
 
-export const refreshAccessToken = async () => {
-  const response = await axiosInstance.post(`auth/refreshToken`);
-  // setAccessToken(response.data.accessToken); // Save new access token
- localStorage.setItem('token', response.data.accessToken)
-   return response.data.accessToken;
-};
-
 export const logout = async () => {
     await axiosInstance.post(`auth/logout`);
     localStorage.removeItem('token');
