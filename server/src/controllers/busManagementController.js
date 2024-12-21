@@ -20,7 +20,7 @@ const addBus = async (req, res, next) => {
 const getBus = async (req, res, next) => {
   
   try {
-    const {id} = req.body;
+    const { id } = req.query;
     const bus = await getBusById({id, user:req.user});
 
     handleResponse(res, 200, 'Bus retrieved successfully', {bus: bus});

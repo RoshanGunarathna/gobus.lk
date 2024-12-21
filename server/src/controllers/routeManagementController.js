@@ -20,7 +20,7 @@ const addRoute = async (req, res, next) => {
 const getRoute = async (req, res, next) => {
   
   try {
-    const {id} = req.body;
+    const { id } = req.query;
     const route = await getRouteById({id, user:req.user});
 
     handleResponse(res, 200, 'Route retrieved successfully', {route: route});
