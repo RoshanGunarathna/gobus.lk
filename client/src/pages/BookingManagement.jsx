@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/bookingmanagement.css";
+import Sidebar from "../components/Sidebar";
 
 const BookingList = ({ userType }) => {
   const [bookings, setBookings] = useState([
@@ -197,9 +198,11 @@ const BookingList = ({ userType }) => {
   };
 
   return (
-    <div className="bus-management-container">
+    <div className="container">
+      <Sidebar />
+    <div>
+      <div className="table-containerb">
       <h1>Booking List</h1>
-      <div className="table-container">
         {userType === "commuter" && (
           <button className="add-booking-btn" onClick={openAddModal}>
             Add New Booking
@@ -246,6 +249,7 @@ const BookingList = ({ userType }) => {
           </tbody>
         </table>
       </div>
+      
 
       {/* Existing Edit Modal */}
       {isModalOpen && (
@@ -457,6 +461,8 @@ const BookingList = ({ userType }) => {
       {/* Toast Message */}
       {showToast && <div className="toast-message">Action successful!</div>}
     </div>
+    </div>
+    
   );
 };
 

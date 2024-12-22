@@ -69,14 +69,6 @@
 }
 
 
-/* Overall container styling */
-.user-management {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f9f9f9;
-  min-height: 100vh;
-}
-
 .user-management h1 {
   text-align: left;
   color: #333;
@@ -204,6 +196,40 @@ tbody tr:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   animation: fade-in-out 3s forwards;
 }
+
+/* User Management styles */
+.user-management {
+  flex: 1;
+  padding: 20px;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+  height: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 71px;
+  color: black;
+  margin-left: 37px;
+}
+
+.user-management h1 {
+  text-align: left;
+  color: #333;
+  margin-bottom: 20px;
+  margin-left: 33px;
+  font-size: 35px;
+}
+
+/* Adjustments for table container */
+table-containeru {
+  width: 90%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 20px;
+
+}
+
 
 @keyframes fade-in-out {
   0% {

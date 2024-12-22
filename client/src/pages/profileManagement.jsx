@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/profilemanagement.css';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Sidebar from '../components/Sidebar';
 
 const exampleUsers = [
   { id: 'B0001', name: 'Niwarthana', email: 'sathyanjali00@gmail.com', role: 'Commuter' },
@@ -37,9 +36,10 @@ function ProfileManagement() {
   };
 
   return (
-    <div className="profile-management-container">
+    <div className="container">
+      <Sidebar />
+      <div className="table-containerp">
       <h1 className="profile-heading">My Profile Details</h1>
-      <div className="table-container">
         <table>
           <thead>
             <tr>
@@ -91,9 +91,9 @@ function ProfileManagement() {
         </div>
       )}
 
-      {/* Toast Notification */}
-      <ToastContainer position="top-right" autoClose={5000} />
+    
     </div>
+    
   );
 }
 
