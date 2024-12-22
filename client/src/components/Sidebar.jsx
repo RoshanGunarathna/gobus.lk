@@ -1,6 +1,7 @@
-// src/components/Sidebar.jsx
+import { useNavigate } from 'react-router-dom';
+import { removeUser } from '../redux/userSlice';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
@@ -9,16 +10,20 @@ const formatRole = (role) => {
 };
 
 function Sidebar() {
-  // Get the user role from Redux state
   const userType = useSelector((state) => state.user?.user?.role || 'guest');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  console.log('User Role:', formatRole(userType));
+  const handleLogout = () => {
+    dispatch(removeUser());
+    navigate('/login');
+  };
 
   const getSidebarItems = () => {
     switch (userType) {
       case 'admin':
         return [
-          { path: '/', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
+          { path: '/dashboard', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
           { path: '/user-management', label: 'User Management', icon: 'https://i.imgur.com/wwPh09a.png' },
           { path: '/route-management', label: 'Route Management', icon: 'https://i.imgur.com/eq8qfsn.png' },
           { path: '/schedules-management', label: 'Schedules Management', icon: 'https://i.imgur.com/41jSlMi.png' },
@@ -26,7 +31,7 @@ function Sidebar() {
         ];
       case 'operator':
         return [
-          { path: '/', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
+          { path: '/dashboard', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
           { path: '/booking-management', label: 'Booking Management', icon: 'https://i.imgur.com/VPo06lE.png' },
           { path: '/route-management', label: 'Route Management', icon: 'https://i.imgur.com/eq8qfsn.png' },
           { path: '/schedules-management', label: 'Schedules Management', icon: 'https://i.imgur.com/41jSlMi.png' },
@@ -34,12 +39,12 @@ function Sidebar() {
         ];
       case 'commuter':
         return [
-          { path: '/', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
+          { path: '/dashboard', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
           { path: '/booking-management', label: 'My Booking', icon: 'https://i.imgur.com/VPo06lE.png' },
-          { path: '/profile', label: 'Profile', icon: 'https://i.imgur.com/Xs88ZWL.png' },
+          { path: '/profile-management', label: 'Profile', icon: 'https://i.imgur.com/Xs88ZWL.png' },
         ];
       default:
-        return []; // Return an empty array for invalid userType
+        return [];
     }
   };
 
@@ -58,6 +63,7 @@ function Sidebar() {
 
   const sidebarItems = getSidebarItems();
   const panelLabel = getPanelLabel();
+  
 
   return (
     <div className="sidebar">
@@ -67,7 +73,10 @@ function Sidebar() {
         <ul>
           {sidebarItems?.map((item, index) => (
             <li key={index}>
-              <NavLink to={item.path} className="sidebar-link" activeClassName="active-link">
+              <NavLink 
+                to={item.path} 
+                className={({ isActive }) => `sidebar-link${isActive ? ' active-link' : ''}`}
+              >
                 <img src={item.icon} className="img-icon" alt={item.label} />
                 {item.label}
               </NavLink>
@@ -75,6 +84,12 @@ function Sidebar() {
           ))}
         </ul>
       </nav>
+      <div className="logout-section">
+        <button onClick={handleLogout} className="logout-btn">
+          <img src="https://i.imgur.com/gRILelJ.png" alt="Logout" className="logout-icon" />
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

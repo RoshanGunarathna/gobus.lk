@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const userManagementRoutes = require('./routes/userManagementRoutes');
 const busManagementRoutes = require('./routes/busManagementRoutes');
 const routeManagementRoutes = require('./routes/routeManagementRoutes');
+const sheduleManagementRoutes = require('./routes/sheduleManagementRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes); // Authentication-related routes
 app.use('/api/userManagement', userManagementRoutes); 
 app.use('/api/busManagement', busManagementRoutes);
 app.use('/api/routeManagement', routeManagementRoutes);
+app.use('/api/sheduleManagement', sheduleManagementRoutes);
 
 // Error handling middleware (custom middleware for handling errors globally)
 app.use(errorMiddleware);

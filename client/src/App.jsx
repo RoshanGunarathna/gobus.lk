@@ -4,9 +4,15 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, useLocat
 import { useSelector } from "react-redux";
 import Signup from "./pages/singup";
 import Login from "./pages/login";
-import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
+import UserManagement from "./pages/UserManagement";
+import RoutesManagement from "./pages/RoutesManagement";
+import SchedulesManagement from "./pages/SchedulesManagement";
+import BusManagement from "./pages/BusManagement";
+import BookingManagement from "./pages/BookingManagement";
+import ProfileManagement from "./pages/profileManagement";
 import { useEffect } from "react";
+import './App.css';
 
 
 
@@ -22,7 +28,6 @@ function AppContent() {
   const location = useLocation();
 
   const user = useSelector((state) => {
-    console.log(`State ??? :: ${JSON.stringify(state.user.user)}`);
     return state.user.user;
   });
 
@@ -30,13 +35,14 @@ function AppContent() {
   // Redirect based on the user state change
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      // navigate("/dashboard");
     } 
    else if(location.pathname != "/signup"){
       navigate("/login");
     } 
   }, [user, navigate]);
 
+  
   return (
     <div className="app-container">
        
@@ -47,8 +53,8 @@ function AppContent() {
             user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
           }
         />
-        <Route
-          path="/dashboard"
+        
+        <Route path="/dashboard"
           element={
             <ProtectedRoute user={user}>
               <Dashboard />
@@ -57,12 +63,21 @@ function AppContent() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/route-management" element={<RoutesManagement />} />
+        <Route path="/schedules-management" element={<SchedulesManagement />} />
+        <Route path="/bus-management" element={<BusManagement />} />
+        <Route path="/booking-management" element={<BookingManagement />} />
+        <Route path="/profile-management" element={<ProfileManagement />} />
+
+
+
+
+
       </Routes>
     </div>
   );
 }
-
-
 
 function App() {
   return (
@@ -73,5 +88,3 @@ function App() {
 }
 
 export default App;
-
-  /* {user && <Sidebar />} */

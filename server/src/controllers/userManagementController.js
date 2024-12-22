@@ -4,7 +4,8 @@ const { handleResponse } = require('../utils/responseHandler');
 const getUser = async (req, res, next) => {
   
   try {
-    const {uid} = req.body;
+
+    const { uid } = req.query;
     const user = await getUserById({uid, user:req.user});
 
     handleResponse(res, 200, 'User retrieved successfully', {user: user});
@@ -38,7 +39,6 @@ const deleteUser = async (req, res, next) => {
 
   try {
     const {uid} = req.body;
-
     await deleteUserById({uid, user:req.user});
 
     handleResponse(res, 200, 'User Delete successfully', null);
