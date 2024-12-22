@@ -1,4 +1,4 @@
-const { loginUser, registerUser, refreshTokens } = require('../services/authService');
+const { loginUser, registerUser, refreshTokens, revokeRefreshToken} = require('../services/authService');
 const { handleResponse } = require('../utils/responseHandler');
 const { setCookie } = require('../utils/cookieUtils');
 
@@ -39,7 +39,7 @@ const refreshToken = (req, res, next) => {
 const logout = (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (refreshToken) {
-    authService.revokeRefreshToken(refreshToken);
+    revokeRefreshToken(refreshToken);
     res.clearCookie('refreshToken');
   }
   res.json({ message: 'Logged out successfully' });

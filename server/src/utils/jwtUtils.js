@@ -5,7 +5,7 @@ const CustomError = require('../utils/customError');
 // Generate an access token
 const generateAccessToken = (user) => {
     const response = jwt.sign(
-        { id: user._id, role: user.role },
+        { uid: user._id, role: user.role },
         jwtConfig.accessTokenSecret,
         { expiresIn: jwtConfig.accessTokenExpiry }
     );
@@ -16,7 +16,7 @@ const generateAccessToken = (user) => {
 // Generate a refresh token
 const generateRefreshToken = (user) => {
     const response = jwt.sign(
-        { id: user._id, role: user.role },
+        { uid: user._id, role: user.role },
         jwtConfig.refreshTokenSecret,
         { expiresIn: jwtConfig.refreshTokenExpiry }
     );
@@ -31,7 +31,7 @@ const verifyToken = (token, secret) => {
         console.log("Token Verification Successfull");
         return response;
     } catch (err) {
-        throw new CustomError("Invalid token", 400);
+        throw new CustomError("Invalid token", 403);
     }
 };
 
