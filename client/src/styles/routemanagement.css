@@ -52,7 +52,7 @@
     background: #f43f3f;
     padding: 10px 28px 10px 28px;
     border-radius: 4px;
-    margin-left: 13px;
+    margin-right: 295px;
 }   
 
 .cancel-buttonmdl{
@@ -67,7 +67,7 @@
   padding: 13px 20px 15px 20px;
   background: #0552BE;
   border-radius: 4px;
-  margin-left: 904px;
+  margin-left: 814px;
  }
   .toast-message {
     position: fixed;
@@ -105,6 +105,9 @@
   .add-route-new{
     background-color: #0552BE;
     border-radius: 4px;
+    padding: 10px 28px 15px 28px;
+    margin-right: 329px;
+    margin-top: 17px;
   }
   .modal-overlay {
     position: fixed;
@@ -153,4 +156,18 @@
     justify-content: flex-end;
     gap: 10px;
   }
-  
+  .table-containerr{
+    color: black;
+
+  }
+
+  .routes-management{
+    color: black;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    height: auto;
+    margin-top: 49px;
+    margin-left: 100px;
+    padding: 7px 30px 10px 30px;
+
+
+  }

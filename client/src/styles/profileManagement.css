@@ -1,0 +1,85 @@
+.profile-management-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  margin-left: 136px;
+  width: 918px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+}
+  
+  .profile-heading {
+    text-align: left;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #333;
+  }
+  
+  /* Table Styles */
+  .table-containerp {
+    width: 60%;
+    margin-right: 140px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 20px;
+    margin-left: 83px;
+    color: black;
+    margin-top: 100px;
+    height: auto;
+  }
+  
+  .profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-table th,
+  .profile-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .profile-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+  }
+  
+  .profile-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .profile-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Button Styles */
+  .edit-button{
+    background-color: #D1FCD5;
+    color: #19AA03;
+    border-radius: 27px;
+    padding: 7px 14px 7px 16px;
+    font-size: 9px;
+  }
+  .delete-button {
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+ 
+  .close-button{
+    padding: 10px 28px 15px 28px;
+    margin-right: -23px;
+    background: #e64444;
+    border-radius: 4px;
+}
+  
