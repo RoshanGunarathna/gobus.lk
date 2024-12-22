@@ -4,7 +4,13 @@ const CustomError = require('../utils/customError');
 
 const getUserById = async (data) => {
   try {
+
+    console.log(`User ID `, data);
+
+
     const user = await User.findById(data.uid).select('-__v -password');
+
+
     
     if (!user) {
       throw new CustomError("User not found", 404);

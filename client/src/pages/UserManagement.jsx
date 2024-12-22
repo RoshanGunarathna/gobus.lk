@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
 import '../styles/UserManagement.css';
 import Sidebar from '../components/Sidebar';
+import { getAllUsers, getAUser } from '../api/usersApi';
+import React, { useState, useEffect } from 'react';
 
 function UserManagement() {
-  const [users, setUsers] = useState([
-    { id: 'U001', name: 'Niwarthana', email: 'Sathyanjali00@gmail.com', role: 'Admin' },
-    { id: 'U002', name: 'Kamal', email: 'kamal@example.com', role: 'Admin' },
-    { id: 'U003', name: 'Sunil', email: 'sunil@example.com', role: 'Admin' },
-    { id: 'U004', name: 'Amara', email: 'amara@example.com', role: 'Admin' },
-    { id: 'U005', name: 'Saman', email: 'saman@example.com', role: 'Admin' },
-  ]);
+
+ 
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const handleEditClick = (user) => {
-    setSelectedUser(user);
+  const handleEditClick = async (user) => {
+  const userData =  await handleGetAUser(user._id);
+  if(userData){
+    setSelectedUser(userData);
     setIsModalOpen(true);
+  }
+    
   };
 
   const handleCloseModal = () => {
+
     setIsModalOpen(false);
     setSelectedUser(null);
   };
@@ -59,6 +60,51 @@ function UserManagement() {
     setSelectedUser(null);
   };
 
+
+  const [users, setUsers] = useState([
+    
+  ]);
+
+  const handleGetUsers = async () => {
+
+    try {
+     // dispatch(loading());
+      const response = await getAllUsers();
+    
+      console.log("Response" , response)
+      setUsers(response.users);
+     
+    } catch (err) {
+      console.error('Get Users Error:', err);
+      //dispatch(loginFailure(err.message || 'Login failed'));
+      showToast(err.message || 'Get all user failed');
+    }
+  };
+
+
+  const handleGetAUser = async (uid) => {
+
+    try {
+     // dispatch(loading());
+      const response = await getAUser(uid);
+    
+      console.log("Response" , response)
+    return response.user;
+     
+    } catch (err) {
+      console.error('Get Users Error:', err);
+      //dispatch(loginFailure(err.message || 'Login failed'));
+      showToast(err.message || 'Get all user failed');
+    }
+  };
+
+
+
+  // Automatically fetch users when the component mounts
+  useEffect(() => {
+    handleGetUsers();
+  }, []);
+
   return (
     <div className="container">
       <Sidebar />
@@ -78,7 +124,7 @@ function UserManagement() {
           <tbody>
             {users.map((user, index) => (
               <tr key={index}>
-                <td>{user.id}</td>
+                <td>{user._id}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>
@@ -86,6 +132,7 @@ function UserManagement() {
                   <button
                     className="edit-button"
                     onClick={() => handleEditClick(user)}
+                    
                   >
                     Edit
                   </button>
@@ -107,7 +154,7 @@ function UserManagement() {
         <div className="modal">
           <div className="modal-content">
             <h2>Edit User List Details</h2>
-            <label>
+            {/* <label>
               User ID
               <input
                 type="text"
@@ -115,7 +162,7 @@ function UserManagement() {
                 value={selectedUser.id}
                 onChange={handleInputChange}
               />
-            </label>
+            </label> */}
             <label>
               User Name
               <input
@@ -134,7 +181,7 @@ function UserManagement() {
                 onChange={handleInputChange}
               />
             </label>
-            <label>
+            {/* <label>
               User Role
               <select name="role" value={selectedUser.role} onChange={handleInputChange} className='role-select'>
 
@@ -142,7 +189,7 @@ function UserManagement() {
                 <option value="Operator">Operator</option>
                 <option value="Commuter">Commuter </option>
               </select>
-            </label>
+            </label> */}
             <div className="modal-actions">
               <button className="update-button" onClick={handleUpdate}>
                 Update
