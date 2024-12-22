@@ -279,16 +279,19 @@
   border-radius: 4px;
 }
 
-.bus-management-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    margin-left: 100px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    height: auto;
-    color: black;
 
-  }
 
-.table-containerb{
+.table-containerbu{
+  width: 68%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 20px;
+  margin-left: 83px;
+  color: black;
+  margin-top: 100px;
+  height: auto;
+  margin-left: -54px;
 
 }
