@@ -153,9 +153,9 @@ tbody tr:hover {
 .delete-button {
   background-color: #FCD1D2;
   color: #FF0004;
-  border-radius: 47px;
-  padding: 7px 12px 7px 12px;
-  font-size: 9px;
+  border-radius: 47px !important;
+  padding: 7px 12px 7px 12px !important;
+  font-size: 9px !important;
   margin-left: 11px;
 }
 
@@ -172,6 +172,14 @@ tbody tr:hover {
   justify-content: center;
   align-items: center;
 }
+
+.current-user-row {
+  background-color: #f0f8ff !important; /* Add !important if other styles are overriding */
+  font-weight: bold !important;
+  color: black!important;
+}
+
+
 
 .modal-content {
   background: #fff;
@@ -219,7 +227,7 @@ tbody tr:hover {
 }
 
 /* Adjustments for table container */
-table-containeru {
+.table-containeru {
   width: 90%;
   margin: 0 auto;
   background: #fff;

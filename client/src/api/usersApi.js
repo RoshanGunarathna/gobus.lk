@@ -25,14 +25,25 @@ export const getAUser = async (uid) => {
   }
 };
 
-export const updateUser = async (uid) => {
+
+export const updateUser = async (uid, userData) => {
   try {
-    
-    const response = await axiosInstance.post(`userManagement/updateUser`, {uid});
+    const response = await axiosInstance.post(`userManagement/updateUser`, {
+      uid,
+      ...userData
+    });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "An error." };
+    throw error.response?.data || { message: "An error occurred while updating user." };
   }
 };
-
   
+
+export const deleteUser = async (uid) => {
+  try {
+    const response = await axiosInstance.post(`userManagement/deleteUser`, { uid });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "An error occurred while deleting user." };
+  }
+};

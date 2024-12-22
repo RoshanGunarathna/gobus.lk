@@ -66,9 +66,8 @@ function BusManagement() {
   return (
     <div className="container">
       <Sidebar />
-    <div className="bus-management-container">
       <h1>Bus List</h1>
-      <div className="table-containerb">
+      <div className="table-containerbu">
       <button className="add-bus-btn" onClick={() => setAddModal(true)}>Add New Bus</button>
 
       <table className="bus-table">
@@ -194,7 +193,6 @@ function BusManagement() {
           {toastMessage}
         </div>
       )}
-    </div>
     </div>
     </div>
   );

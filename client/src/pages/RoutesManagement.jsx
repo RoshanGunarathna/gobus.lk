@@ -1,28 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/routemanagement.css';
 import Sidebar from '../components/Sidebar';
+import { addRoute, getRoutes, getRouteById, updateRoute, deleteRoute } from '../api/routeApi';
 
 function RoutesManagement() {
-  const [routes, setRoutes] = useState([
-    { id: 'EX1 - 22', name: 'MATHARA - KADAWATHA' },
-    { id: 'EX2 - 33', name: 'COLOMBO - KANDY' },
-    { id: 'EX3 - 44', name: 'JAFFNA - GALLE' },
-    { id: 'EX4 - 55', name: 'NEGOMBO - BATTICALOA' },
-    { id: 'EX5 - 66', name: 'ANURADHAPURA - TRINCOMALEE' },
-  ]);
-
+  const [routes, setRoutes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [currentRoute, setCurrentRoute] = useState({ id: '', name: '' });
+  const [currentRoute, setCurrentRoute] = useState({ routeId: '', name: '' });
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleEditClick = (route) => {
-    setCurrentRoute(route);
+  useEffect(() => {
+    fetchRoutes();
+  }, []);
+
+  const fetchRoutes = async () => {
+    try {
+      const response = await getRoutes();
+      if (response && response.routes) {
+        setRoutes(response.routes);
+      }
+    } catch (error) {
+      showToastMessage('Error fetching routes: ' + error.message);
+    }
+  };
+
+  const handleEditClick = async (route) => {
     setIsModalOpen(true);
+    setIsLoading(true);
+    
+    try {
+      const response = await getRouteById(route._id);
+      if (response && response.route) {
+        setCurrentRoute(response.route);
+      }
+    } catch (error) {
+      showToastMessage('Error fetching route details: ' + error.message);
+      setIsModalOpen(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -30,14 +52,18 @@ function RoutesManagement() {
     setCurrentRoute({ ...currentRoute, [name]: value });
   };
 
-  const handleUpdate = () => {
-    setRoutes((prevRoutes) =>
-      prevRoutes.map((route) =>
-        route.id === currentRoute.id ? currentRoute : route
-      )
-    );
-    setIsModalOpen(false);
-    showToastMessage('Route updated successfully!');
+  const handleUpdate = async () => {
+    try {
+      setIsLoading(true);
+      await updateRoute(currentRoute);
+      await fetchRoutes(); // Refresh the routes list
+      setIsModalOpen(false);
+      showToastMessage('Route updated successfully!');
+    } catch (error) {
+      showToastMessage('Error updating route: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeleteClick = (route) => {
@@ -45,18 +71,24 @@ function RoutesManagement() {
     setIsDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
-    setRoutes((prevRoutes) =>
-      prevRoutes.filter((route) => route.id !== routeToDelete.id)
-    );
-    setIsDeleteDialogOpen(false);
-    showToastMessage(`Route ${routeToDelete.id} deleted successfully!`);
+  const confirmDelete = async () => {
+    try {
+      setIsLoading(true);
+      await deleteRoute(routeToDelete._id);
+      await fetchRoutes(); // Refresh the routes list
+      setIsDeleteDialogOpen(false);
+      showToastMessage(`Route ${routeToDelete.routeId} deleted successfully!`);
+    } catch (error) {
+      showToastMessage('Error deleting route: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!currentRoute.id.trim()) {
-      errors.id = 'Route ID is required.';
+    if (!currentRoute.routeId.trim()) {
+      errors.routeId = 'Route ID is required.';
     }
     if (!currentRoute.name.trim()) {
       errors.name = 'Route Name is required.';
@@ -66,16 +98,24 @@ function RoutesManagement() {
   };
 
   const handleAddClick = () => {
-    setCurrentRoute({ id: '', name: '' });
+    setCurrentRoute({ routeId: '', name: '' });
     setFormErrors({});
     setIsAddModalOpen(true);
   };
 
-  const handleAddNewRoute = () => {
+  const handleAddNewRoute = async () => {
     if (validateForm()) {
-      setRoutes((prevRoutes) => [...prevRoutes, currentRoute]);
-      setIsAddModalOpen(false);
-      showToastMessage('Route added successfully!');
+      try {
+        setIsLoading(true);
+        await addRoute(currentRoute);
+        await fetchRoutes();
+        setIsAddModalOpen(false);
+        showToastMessage('Route added successfully!');
+      } catch (error) {
+        showToastMessage('Error adding route: ' + error.message);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       showToastMessage('Please correct the errors in the form.');
     }
@@ -89,157 +129,180 @@ function RoutesManagement() {
 
   return (
     <div className="container">
-      <Sidebar/>
-    <div className="routes-management">
-      <h1 className="topic">Bus Routes List</h1>
-      <div className="table-containerr">
-        <button className="add-route-button" onClick={handleAddClick}>
-          Add New Route
-        </button>
-        <table className="routes-table">
-          <thead>
-            <tr>
-              <th>Route ID</th>
-              <th>Route Name</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {routes.map((route, index) => (
-              <tr key={index}>
-                <td>{route.id}</td>
-                <td>{route.name}</td>
-                <td>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditClick(route)}
+      <Sidebar />
+      <div className="routes-management">
+        <h1 className="topic">Bus Routes List</h1>
+        <div className="table-containerr">
+          <button className="add-route-button" onClick={handleAddClick}>
+            Add New Route
+          </button>
+          <table className="routes-table">
+            <thead>
+              <tr>
+                <th>Route ID</th>
+                <th>Route Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {routes.map((route) => (
+                <tr key={route._id}>
+                  <td>{route.routeId}</td>
+                  <td>{route.name}</td>
+                  <td>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEditClick(route)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteClick(route)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Edit Modal */}
+          {isModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>Edit Bus Routes Details</h2>
+                {isLoading ? (
+                  <div className="loading-spinner">Loading...</div>
+                ) : (
+                  <>
+                    <label>
+                      Route ID
+                      <input
+                        type="text"
+                        name="routeId"
+                        value={currentRoute.routeId}
+                        onChange={handleInputChange}
+                        disabled
+                      />
+                    </label>
+                    <label>
+                      Route Name
+                      <input
+                        type="text"
+                        name="name"
+                        value={currentRoute.name}
+                        onChange={handleInputChange}
+                      />
+                    </label>
+                    <div className="modal-buttons">
+                      <button 
+                        className="update-button" 
+                        onClick={handleUpdate}
+                        disabled={isLoading}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="cancel-buttonmdl"
+                        onClick={() => setIsModalOpen(false)}
+                        disabled={isLoading}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Add New Route Modal */}
+          {isAddModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>Add New Route</h2>
+                <label>
+                  Route ID
+                  <input
+                    type="text"
+                    name="routeId"
+                    value={currentRoute.routeId}
+                    onChange={handleInputChange}
+                    placeholder="Enter route ID"
+                  />
+                  {formErrors.routeId && (
+                    <span className="error">{formErrors.routeId}</span>
+                  )}
+                </label>
+                <label>
+                  Route Name
+                  <input
+                    type="text"
+                    name="name"
+                    value={currentRoute.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter route name"
+                  />
+                  {formErrors.name && (
+                    <span className="error">{formErrors.name}</span>
+                  )}
+                </label>
+                <div className="modal-buttons">
+                  <button 
+                    className="add-route-new" 
+                    onClick={handleAddNewRoute}
+                    disabled={isLoading}
                   >
-                    Edit
+                    Add Route
                   </button>
                   <button
-                    className="delete-button"
-                    onClick={() => handleDeleteClick(route)}
+                    className="cancel-buttonmdl"
+                    onClick={() => setIsAddModalOpen(false)}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Delete Confirmation Dialog */}
+          {isDeleteDialogOpen && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>Confirm Delete</h2>
+                <p>
+                  Are you sure you want to delete the route with ID{' '}
+                  {routeToDelete.routeId}?
+                </p>
+                <div className="modal-buttons">
+                  <button 
+                    className="delete-buttonmd3" 
+                    onClick={confirmDelete}
+                    disabled={isLoading}
                   >
                     Delete
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Edit Modal */}
-        {isModalOpen && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>Edit Bus Routes Details</h2>
-              <label>
-                Route ID
-                <input
-                  type="text"
-                  name="id"
-                  value={currentRoute.id}
-                  onChange={handleInputChange}
-                  disabled
-                />
-              </label>
-              <label>
-                Route Name
-                <input
-                  type="text"
-                  name="name"
-                 
-                  value={currentRoute.name}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <div className="modal-buttons">
-                <button className="update-button" onClick={handleUpdate}>
-                  Update
-                </button>
-                <button
-                  className="cancel-buttonmdl"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
+                  <button
+                    className="cancel-button"
+                    onClick={() => setIsDeleteDialogOpen(false)}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-               {/* Add New Route Modal */}
-               {isAddModalOpen && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>Add New Route</h2>
-              <label>
-                Route ID
-                <input
-                  type="text"
-                  name="id"
-                  value={currentRoute.id}
-                  onChange={handleInputChange}
-                  placeholder="Enter route ID"
-                />
-                {formErrors.id && <span className="error">{formErrors.id}</span>}
-              </label>
-              <label>
-                Route Name
-                <input
-                  type="text"
-                  name="name"
-                  value={currentRoute.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter route name"
-                />
-                {formErrors.name && <span className="error">{formErrors.name}</span>}
-              </label>
-              <div className="modal-buttons">
-                <button className="add-route-new" onClick={handleAddNewRoute}>
-                  Add Route
-                </button>
-                <button
-                  className="cancel-buttonmdl"
-                  onClick={() => setIsAddModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        
-
-        {/* Delete Confirmation Dialog */}
-        {isDeleteDialogOpen && (
-          
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>Confirm Delete</h2>
-              <p>Are you sure you want to delete the route with ID {routeToDelete.id}?</p>
-              <div className="modal-buttons">
-                <button className="delete-buttonmd3" onClick={confirmDelete}>
-                  Delete
-                </button>
-                <button
-                  className="cancel-button"
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Toast Notification */}
-        {showToast && <div className="toast-message">{toastMessage}</div>}
+          {/* Toast Notification */}
+          {showToast && <div className="toast-message">{toastMessage}</div>}
+        </div>
       </div>
     </div>
-    </div>
-   
   );
 }
 
