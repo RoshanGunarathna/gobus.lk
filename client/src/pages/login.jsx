@@ -31,6 +31,7 @@ const Login = () => {
         role: response.user.role,
       };
 
+      navigate("/dashboard");
 
       // Update Redux store directly
       dispatch(updateUser(userData));
@@ -42,7 +43,7 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container-login">
       {toastMessage && <div className="toast">{toastMessage}</div>}
       <div className="left-section">
         <img src="https://i.imgur.com/ceOWZEe.png" alt="Bus" className="side-image" />

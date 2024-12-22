@@ -1,15 +1,11 @@
-// src/redux/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
-
-
-// Define the initial state
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem('user')) || null, // Load user from localStorage
   loading: false,
   error: null,
-  isAuthenticated: false, // Set authenticated status
+  isAuthenticated: !!localStorage.getItem('user'), // Check if user data exists
 };
 
 const userSlice = createSlice({
@@ -21,9 +17,10 @@ const userSlice = createSlice({
       state.error = null;
     },
     updateUser: (state, action) => {
-      console.log(action.payload)
+      const userData = action.payload;
+      localStorage.setItem('user', JSON.stringify(userData)); // Save user to localStorage
       state.loading = false;
-      state.user = action.payload;
+      state.user = userData;
       state.isAuthenticated = true;
       state.error = null;
     },
@@ -32,6 +29,7 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
     removeUser: (state) => {
+      localStorage.removeItem('user'); // Clear user from localStorage
       state.user = null;
       state.error = null;
       state.isAuthenticated = false;

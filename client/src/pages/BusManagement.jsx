@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import Sidebar from '../components/Sidebar';
 import '../styles/BusManagement.css';
+
 
 function BusManagement() {
   const [buses, setBuses] = useState([
@@ -62,9 +64,11 @@ function BusManagement() {
   };
 
   return (
+    <div className="container">
+      <Sidebar />
     <div className="bus-management-container">
       <h1>Bus List</h1>
-      <div className="table-container">
+      <div className="table-containerb">
       <button className="add-bus-btn" onClick={() => setAddModal(true)}>Add New Bus</button>
 
       <table className="bus-table">
@@ -190,6 +194,7 @@ function BusManagement() {
           {toastMessage}
         </div>
       )}
+    </div>
     </div>
     </div>
   );

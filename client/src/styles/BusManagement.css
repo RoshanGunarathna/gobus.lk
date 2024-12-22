@@ -1,7 +1,4 @@
-.bus-management-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
+
   
   .bus-table {
     width: 100%;
@@ -282,3 +279,16 @@
   border-radius: 4px;
 }
 
+.bus-management-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    margin-left: 100px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    height: auto;
+    color: black;
+
+  }
+
+.table-containerb{
+
+}

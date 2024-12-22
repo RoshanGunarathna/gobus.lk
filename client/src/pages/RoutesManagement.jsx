@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/routemanagement.css';
+import Sidebar from '../components/Sidebar';
 
 function RoutesManagement() {
   const [routes, setRoutes] = useState([
@@ -87,9 +88,11 @@ function RoutesManagement() {
   };
 
   return (
+    <div className="container">
+      <Sidebar/>
     <div className="routes-management">
       <h1 className="topic">Bus Routes List</h1>
-      <div className="table-container">
+      <div className="table-containerr">
         <button className="add-route-button" onClick={handleAddClick}>
           Add New Route
         </button>
@@ -211,6 +214,7 @@ function RoutesManagement() {
 
         {/* Delete Confirmation Dialog */}
         {isDeleteDialogOpen && (
+          
           <div className="modal-overlay">
             <div className="modal-content">
               <h2>Confirm Delete</h2>
@@ -234,6 +238,8 @@ function RoutesManagement() {
         {showToast && <div className="toast-message">{toastMessage}</div>}
       </div>
     </div>
+    </div>
+   
   );
 }
 

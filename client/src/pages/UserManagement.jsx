@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/UserManagement.css';
+import Sidebar from '../components/Sidebar';
 
 function UserManagement() {
   const [users, setUsers] = useState([
@@ -59,9 +60,11 @@ function UserManagement() {
   };
 
   return (
+    <div className="container">
+      <Sidebar />
     <div className="user-management">
       <h1>Users List</h1>
-      <div className="table-container">
+      <div className="table-containeru">
         <table>
           <thead>
             <tr>
@@ -174,6 +177,8 @@ function UserManagement() {
       {/* Toast Message */}
       {toastMessage && <div className="toast">{toastMessage}</div>}
     </div>
+    </div>
+
   );
 }
 
