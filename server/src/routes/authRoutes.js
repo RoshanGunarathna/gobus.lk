@@ -1,26 +1,18 @@
 const express = require('express');
-const { register, login, refreshToken} = require('../controllers/authController');
-const { body } = require("express-validator");
+const {register, login, refreshToken, logout } = require('../controllers/authController');
 const router = express.Router();
-const protect = require("../middlewares/auth");
+const { registerValidation, loginValidation } = require('../validations/authValidation');
+const { validate } = require('../middlewares/validateMiddleware');
 
-router.post( "/register",
-    [
-        body("name").notEmpty(),
-        body("email").isEmail(),
-        body("password").isLength({ min: 8 }),
-    ],
-    register);
+router.post( "/register",registerValidation, validate, register);
 
 
-router.post('/login', login);
+router.post('/login', loginValidation, validate, login);
 
 // Refresh Token
 router.post("/refreshToken", refreshToken);
+router.post('/logout', logout);
 
-// Example protected route
-router.get("/adminDashboard", protect(["admin"]), (req, res) => {
-    res.json({ message: `Welcome, ${req.user.name}` });
-});
+
 
 module.exports = router;

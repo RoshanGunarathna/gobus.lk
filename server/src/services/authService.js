@@ -1,34 +1,98 @@
 
 const { User } = require('../models');
-const { generateToken } = require('../utils/jwt');
-const {updateUserById} = require('../services/userService');
+const { RefreshToken } = require('../models');
 require('dotenv').config();
+const CustomError = require('../utils/customError');
+const { generateAccessToken, generateRefreshToken, verifyToken, revokeRefreshToken } = require('../utils/jwtUtils');
+const jwtConfig = require('../config/jwt');
 
-const registerUser = async (name, email, password, role) => {
-  
-  const user = await User.create({ name, email, password, role });
-  res.status(201).json({ message: "User registered successfully" });
+
+
+// Private method to check if a user exists by email
+const isUserExist = async (email) => {
+  return await User.findOne({ email }).select('-__v');
 };
 
+const registerUser = async (name, email, password) => {
+
+  // Check if the user already exists
+  const existingUser = await isUserExist(email);
+  if (existingUser) {
+    throw new CustomError("User already exists", 400);
+
+  }
+
+  const user = await User.create({ name, email, password, role: "commuter" });
+
+
+
+  return { statusCode: 201 };
+};
 
 const loginUser = async (email, password) => {
-  const user = await User.findOne({ email });
-  if (!user || !(await user.matchPassword(password))) throw Error("Invalid credentials");
+  const user = await isUserExist(email);
 
-  const accessToken = generateToken(user, process.env.JWT_SECRET, "15m");
-  const refreshToken = generateToken(user, process.env.JWT_REFRESH_SECRET, "7d");
+  if (!user || !(await user.matchPassword(password))) {
+    throw new CustomError("Invalid credentials", 400);
+  }
 
-  res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
-  res.json({ accessToken });
   
-  const token = generateToken(userId);
+  const refreshToken = await generateRefreshToken(user);
 
-  return { user, token ,statusCode};
+
+  const accessToken = generateAccessToken(user);
+
+
+  // Convert Mongoose document to plain object
+  const userObj = user.toObject();
+
+  // Remove sensitive fields
+  delete userObj.password;
+
+  return { user: userObj, accessToken, refreshToken };
+};
+
+const refreshTokens = async (refreshToken) => {
+
+  if (!refreshToken) {
+    throw new CustomError("Refresh token missing", 401);
+  }
+
+
+  const storedToken = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!storedToken) {
+    throw new CustomError("Refresh token is not valid", 401);
+  }
+
+
+  if (storedToken.revokedAt) {
+    
+
+    throw new CustomError("Refresh token has been revoked", 401);
+  }
+
+  if (new Date() > storedToken.expiresAt) {
+    throw new CustomError("Refresh token expired", 401);
+  }
+
+  const decoded = verifyToken(refreshToken,  jwtConfig.refreshTokenSecret);
+
+
+  const newAccessToken = generateAccessToken({ _id: decoded.uid, role: decoded.role });
+
+  const newRefreshToken = await generateRefreshToken({ _id: decoded.uid, role: decoded.role });
+ 
+
+
+  // Revoke the old refresh token and store the replacement
+  revokeRefreshToken({oldRefreshToken: refreshToken, newRefreshToken});
+
+  return {newAccessToken, newRefreshToken};
 };
 
 
 
-module.exports = {
-  loginUser,
-  registerUser,
-};
+
+
+module.exports = { loginUser, registerUser, refreshTokens, revokeRefreshToken };
