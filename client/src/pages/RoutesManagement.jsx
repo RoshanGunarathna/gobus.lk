@@ -48,19 +48,10 @@ function RoutesManagement() {
   console.log('Selected route object:', route);
   console.log('Route _id:', route._id);  // Add this specific check
 
-  // const handleEditClick = async (user) => {
-  //   const userData = await handleGetAUser(user._id);
-  //   if (userData) {
-  //     setSelectedUser(userData);
-  //     setIsModalOpen(true);
-  //   }
-  // };
-
-  
   try {
     const response = await getRouteById(route._id);
     // Add this to see what comes from the API
-    console.log('API response data:', response.data);
+    console.log('API response data:', response);
     
     if (response?.data?.route) {
       setCurrentRoute(response.data.route);

@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import '../styles/BusManagement.css';
-import { getAllBuses, addBus, updateBus, deleteBus } from '../api/BusApi';
+import { getAllBuses, addBus, updateBus, deleteBus , getBusById} from '../api/BusApi';
 
 function BusManagement() {
   const [buses, setBuses] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(null);
   const [addModal, setAddModal] = useState(false);
-  const [newBus, setNewBus] = useState({ number: '', name: '', seat: '' });
+  const [newBus, setNewBus] = useState({ _id: '', number: '', name: '', seat: 0 });
   const [toastMessage, setToastMessage] = useState('');
+   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+ 
 
-  useEffect(() => {
-    fetchBuses();
-  }, []);
 
   
   const fetchBuses = async () => {
     try {
       setIsLoading(true);
-      const response = await getAllBuses();
-      const busData = response.data || response || [];
-      setBuses(Array.isArray(busData) ? busData : []);
+      const busses = await getAllBuses();
+      setBuses(busses);
     } catch (error) {
       console.error('Error fetching buses:', error);
       setToastMessage('Error: ' + (error.message || 'Failed to fetch buses'));
@@ -32,24 +30,69 @@ function BusManagement() {
       setIsLoading(false);
     }
   };
-  
 
-  const handleEdit = (bus) => setModalData(bus);
+  
+  useEffect(() => {
+    fetchBuses();
+  }, []);
+
+  // const handleEdit = (bus) => setModalData(bus);
+
+   const handleEdit = async (bus) => {
+    // Add this console log
+    console.log('Selected bus object:', bus);
+    console.log('Route _id:', bus._id);  // Add this specific check
+  
+    try {
+      const busData = await getBusById(bus._id);
+      // Add this to see what comes from the API
+      console.log('API response data:', busData);
+      
+      if (busData) {
+        setModalData(busData);
+      } 
+    } catch (error) {
+      console.error('Error fetching bus details:', error);
+      showToastMessage('Failed to fetch bus details');
+    }
+  };
+
+  
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   const handleCloseModal = () => setModalData(null);
 
   const handleSaveChanges = async () => {
-    try {
-      await updateBus(modalData.id, modalData);
-      await fetchBuses();
-      setToastMessage('Successfully updated!');
-      setModalData(null);
-    } catch (error) {
-      console.error('Error updating bus:', error);
-      setToastMessage(error.message || 'Failed to update bus');
-    }
-    setTimeout(() => setToastMessage(''), 3000);
-  };
+      if (validateForm()) {
+        try {
+        
+          // Create update data object
+          const updateData = {
+            _id: modalData._id,
+            number: modalData.number, 
+             seat: modalData.seat,
+            name: modalData.name
+          };
+          
+          // Log the exact data being sent
+          console.log('Data being sent to backend:', updateData);
+          
+          await updateBus(updateData);
+          await fetchBuses();
+        setModalData(null);
+        setToastMessage('Successfully updated!');
+        } catch (error) {
+          console.error('Error updating route:', error);
+          setToastMessage(error.message || 'Failed to update bus');
+        }
+       
+      }
+      setTimeout(() => setToastMessage(''), 3000);
+    };
 
   const handleDelete = async (_id) => {
     try {
@@ -227,8 +270,9 @@ function BusManagement() {
           </div>
         )}
 
+
         {/* Toast Notification */}
-        {toastMessage && (
+        {showToast && (
           <div className="bus-toast-unique">
             {toastMessage}
           </div>
