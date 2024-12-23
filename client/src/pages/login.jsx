@@ -1,91 +1,88 @@
-// src/pages/login.jsx
-import React, { useState } from 'react';
-import '../styles/auth.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../api/authApi';
+import { updateUser } from '../redux/userSlice';
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
 
-  // Validation logic
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.email) {
-      newErrors.email = 'Email is required.';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid.';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required.';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters.';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [toastMessage, setToastMessage] = useState(null);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+   const { loading, error, isAuthenticated, user } = useSelector((state) => state.user);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      if (formData.email === 'admin@gmail.com' && formData.password === 'admin123') {
-        setSuccessMessage('Login successful!');
-      } else {
-        setErrors({ general: 'Invalid username or password.' });
-      }
-    }
-  };
+    
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    try {
+     // dispatch(loading());
+      const user = await login(email, password);
+    
+
+    
+      // Extract user data from the nested structure
+      const userData = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+
+      navigate("/dashboard");
+
+      // Update Redux store directly
+      dispatch(updateUser(userData));
+    } catch (err) {
+      console.error('Login Error:', err);
+      //dispatch(loginFailure(err.message || 'Login failed'));
+      showToast(err.message || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
-    <div className="container">
+    <div className="container-login">
+      {toastMessage && <div className="toast">{toastMessage}</div>}
       <div className="left-section">
-        <img src="https://i.imgur.com/ceOWZEe.png" alt="Side Image" className="side-image" />
+        <img src="https://i.imgur.com/ceOWZEe.png" alt="Bus" className="side-image" />
       </div>
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
-        <form onSubmit={handleSubmit}>
-          <p className="login-now">Login</p>
-
+        <form className="form" onSubmit={handleLogin}>
+          <h2 className="signup-now">Login Now!</h2>
           <input
             type="email"
-            name="email"
-            placeholder="Enter your Email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             className="input"
-            value={formData.email}
-            onChange={handleChange}
           />
-          {errors.email && <p className="error-text">{errors.email}</p>}
-
           <input
             type="password"
-            name="password"
-            placeholder="Enter your Password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
             className="input"
-            value={formData.password}
-            onChange={handleChange}
           />
-          {errors.password && <p className="error-text">{errors.password}</p>}
-
-          {errors.general && <p className="error-text">{errors.general}</p>}
-
-          {successMessage && <p className="success-text">{successMessage}</p>}
-
-          <p className="account-text">
-            Don't have an account? <Link to="/"><span className="color">Sign Up</span></Link>
+          <p className="signup-text">
+            You do not have an account? <a href="/signup">Sign Up</a>
           </p>
-          <button type="submit" className="button">Login</button>
+          <button 
+            type="submit" 
+            className="button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
