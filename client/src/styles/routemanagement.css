@@ -67,7 +67,7 @@
   padding: 13px 20px 15px 20px;
   background: #0552BE;
   border-radius: 4px;
-  margin-left: 904px;
+  margin-left: 814px;
  }
   .toast-message {
     position: fixed;
@@ -155,5 +155,21 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+  }
+  .table-containerr{
+    color: black;
+
+  }
+
+  .routes-management{
+    color: black;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    height: auto;
+    margin-top: 49px;
+    margin-left: 100px;
+    padding: 7px 30px 10px 30px;
+    overflow-y: auto;
+
+
   }
   

@@ -1,0 +1,321 @@
+
+  
+  .bus-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .bus-table th, .bus-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .bus-table th {
+    text-align: left;
+    background-color: #f2f2f2;
+  }
+  
+  .edit-btn {
+    background-color: #D1FCD5;
+    color: #19AA03;
+    border-radius: 27px;
+    padding: 7px 14px 7px 16px;
+    font-size: 9px;
+  }
+  
+  .delete-btn {
+    background-color: #FCD1D2;
+    color: #FF0004;
+    border-radius: 47px;
+    padding: 7px 12px 7px 12px;
+    font-size: 9px;
+    margin-left: 11px;
+  }
+  
+  .add-bus-btn {
+    margin-bottom: 23px;
+    padding: 13px 20px 15px 20px;
+    background: #0552BE;
+    border-radius: 4px;
+    margin-left: 885px;
+  }
+
+
+  /* Uncommon Modal Classes for Styling */
+
+.bus-modal-overlay-unique {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensures modal is on top */
+}
+
+
+
+.bus-modal-unique h2 {
+  margin-top: 0;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.bus-modal-unique label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+
+
+.bus-modal-buttons-unique {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+
+/* Ensure Modal and Overlay are unique */
+.bus-modal-overlay-unique, 
+.bus-modal-unique, 
+.bus-save-btn-unique{
+  font-family: Arial, sans-serif;
+}
+
+/* Toast Notification */
+.bus-toast-unique {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+/* Modal Overlay */
+.bus-modal-overlay-unique {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+.bus-modal-unique {
+  background: white;
+  padding: 35px 55px 21px 40px;
+  border-radius: 10px;
+  width: 420px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bus-modal-unique h2 {
+  margin-top: 0;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.bus-modal-unique label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.bus-modal-unique label input {
+  width: 100%;
+  padding: 13px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: none;
+  color: black;
+}
+
+.bus-modal-buttons-unique {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+
+.bus-close-btn-unique {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Delete Confirmation Dialog */
+.bus-confirm-dialog-overlay-unique {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+.bus-confirm-dialog-unique {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bus-dialog-buttons-unique {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.bus-confirm-btn-unique {
+  background-color: #e64444;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bus-cancel-btn-unique {
+  background-color: #ebeaea;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Toast Notification */
+.bus-toast-unique {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+/* Modal Overlay */
+.bus-modal-overlay-unique {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+
+
+.bus-modal-unique h2 {
+  margin-top: 0;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.bus-modal-unique label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.bus-error-unique {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.bus-modal-buttons-unique {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bus-save-btn-unique {
+  background-color: #0552BE;
+    color: white;
+    border: none;
+    padding: 18px 36px 23px 35px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 219px;
+    margin-top: 1px;
+    width: 119px;
+}
+
+.bus-close-btn-unique {
+  padding: 1px 28px 1px 31px;
+  margin-right: -18px;
+  background: #e64444;
+  border-radius: 4px;
+}
+
+
+
+.table-containerbu{
+  width: 68%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 20px;
+  margin-left: 83px !important;
+  color: black;
+  margin-top: 100px;
+  height: auto;
+  overflow-y: auto;
+
+}
+
+
+
+.bus-toast-unique {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-weight: bold;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
+

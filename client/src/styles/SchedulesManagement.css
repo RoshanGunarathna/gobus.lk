@@ -1,10 +1,14 @@
 .schedules-management {
     padding: 20px;
     font-family: Arial, sans-serif;
+    margin-left: 35px;
+    color: black;
+    height: auto;
   }
   
   h1 {
     font-size: 24px;
+    margin-left: 37px;
     margin-bottom: 20px;
   }
   
@@ -137,15 +141,23 @@
 }
 
 .cancel-btn {
-    background-color: #c4c4c4;
-    color: #222222;
+    background-color: #ff5252;
+    color: #ffffff;
     padding: 11px 47px 15px 47px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-right: -18px;
 }
-
+.cancel-btn2 {
+  background-color: #cecccc;
+  color: #000000;
+  padding: 11px 47px 15px 47px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: -18px;
+}
 .add-btn{
     background-color: #0552BE;
     border-radius: 4px;
@@ -164,6 +176,16 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     animation: fadeInOut 3s;
   }
+
+  .table-container {
+    width: 90%;
+    margin-right: 140px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 20px;
+}
   
   @keyframes fadeInOut {
     0%, 100% {
@@ -173,4 +195,5 @@
       opacity: 1;
     }
   }
+  
   

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/SchedulesManagement.css';
+import Sidebar from '../components/Sidebar';
 
 function SchedulesManagement() {
   const initialSchedules = [
@@ -105,6 +106,8 @@ function SchedulesManagement() {
   };
 
   return (
+    <div className="container">
+      <Sidebar />
     <div className="schedules-management">
       <h1>Schedules Management</h1>
       <div className="table-container">
@@ -371,7 +374,7 @@ function SchedulesManagement() {
               <button className="cmdelete-btn" onClick={handleDeleteConfirm}>
                 Delete
               </button>
-              <button className="cancel-btn" onClick={handleDeleteCancel}>
+              <button className="cancel-btn2" onClick={handleDeleteCancel}>
                 Cancel
               </button>
             </div>
@@ -381,6 +384,7 @@ function SchedulesManagement() {
 
       {/* Toast Message */}
       {toastMessage && <div className="toast-message">{toastMessage}</div>}
+    </div>
     </div>
     </div>
   );

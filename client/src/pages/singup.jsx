@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import '../styles/auth.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { register } from '../api/authApi'; // Import the register function
 
 export default function Signup() {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate(); // For navigation after successful signup
 
   // Validation logic
   const validate = () => {
     const newErrors = {};
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required.';
+    if (!formData.name) {
+      newErrors.name = 'Name is required.';
     }
     if (!formData.email) {
       newErrors.email = 'Email is required.';
@@ -24,21 +26,28 @@ export default function Signup() {
     if (!formData.password) {
       newErrors.password = 'Password is required.';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 8 characters.';
+      newErrors.password = 'Password must be at least 6 characters.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log('Form submitted successfully', formData);
-      // Proceed with form submission logic 
+
+    try {
+      if (validate()) {
+        const response = await register(formData.name, formData.email, formData.password);
+        // Show success message
+        setErrors({});
+        navigate('/'); // Redirect to login after successful signup
+      }
+    } catch (err) {
+      console.error(err);
+      setErrors({ general: 'Error during registration. Please try again.' });
     }
   };
-
 
   // Handle input changes
   const handleChange = (e) => {
@@ -54,17 +63,17 @@ export default function Signup() {
       <div className="right-section">
         <img src="https://i.imgur.com/fwCuriK.png" alt="Logo" className="logo" />
         <form onSubmit={handleSubmit}>
-          <p className="signup-now">Sign up now</p>
+          <p className="signup-now">Sign Up Now..!</p>
 
           <input
             type="text"
-            name="username"
-            placeholder="Enter your Username"
-            className="input-field"
-            value={formData.username}
+            name="name"
+            placeholder="Enter your Name"
+            className="input"
+            value={formData.name}
             onChange={handleChange}
           />
-          {errors.username && <p className="error-text">{errors.username}</p>}
+          {errors.name && <p className="error-text">{errors.name}</p>}
 
           <input
             type="email"
@@ -87,8 +96,9 @@ export default function Signup() {
           {errors.password && <p className="error-text">{errors.password}</p>}
 
           <p className="account-text">
-            Already have an account? <Link to="/login"><span className="color">Login</span></Link>
+            Already have an account? <Link to="/"><span className="color">Login</span></Link>
           </p>
+          {errors.general && <p className="error-text">{errors.general}</p>}
           <button type="submit" className="button">Sign Up</button>
         </form>
       </div>
