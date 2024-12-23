@@ -99,7 +99,7 @@ const getUsersWithFilter = async(userRole) => {
     } 
     
     if (userRole === 'admin') {
-      console.log(userRole)
+   
       userList = await User.find({}).select('-__v -password');
     } 
 
