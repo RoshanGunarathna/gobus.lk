@@ -10,7 +10,7 @@ const isRouteExist = async (routeId) => {
 const addARoute = async (routeId, name) => {
   try {
 
-    console.log(`routeId ${routeId} : name ${name}`)
+
     const existingRoute = await isRouteExist(routeId);
     if (existingRoute) {
       throw new CustomError("Route already exists", 400);

@@ -1,11 +1,12 @@
 
 const { User } = require('../models');
+const { RefreshToken } = require('../models');
 require('dotenv').config();
 const CustomError = require('../utils/customError');
 const { generateAccessToken, generateRefreshToken, verifyToken } = require('../utils/jwtUtils');
+const jwtConfig = require('../config/jwt');
 
 
-const refreshTokensStore = [];
 
 // Private method to check if a user exists by email
 const isUserExist = async (email) => {
@@ -36,12 +37,7 @@ const loginUser = async (email, password) => {
   }
 
   const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-
-  // Store refresh token (replace with DB storage in production)
-  refreshTokensStore.push(refreshToken);
-
-
+  const refreshToken = await generateRefreshToken(user);
 
   // Convert Mongoose document to plain object
   const userObj = user.toObject();
@@ -52,37 +48,58 @@ const loginUser = async (email, password) => {
   return { user: userObj, accessToken, refreshToken };
 };
 
-const refreshTokens = (refreshToken) => {
+const refreshTokens = async (refreshToken) => {
 
   if (!refreshToken) {
     throw new CustomError("Refresh token missing", 401);
   }
 
-  if(!refreshTokensStore.includes(refreshToken)){
+
+  const storedToken = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!storedToken) {
     throw new CustomError("Refresh token is not valid", 401);
   }
+  console.log("1- oldRefreshToken", storedToken)
 
-  // Verify refresh token
-  const decoded = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET);
+  // if (storedToken.revokedAt) {
+    
+  //   console.log(storedToken.revokedAt)
+  //   throw new CustomError("Refresh token has been revoked", 401);
+  // }
 
-  // Generate a new access token
-  const newAccessToken = generateAccessToken({ id: decoded.id, role: decoded.role });
+  if (new Date() > storedToken.expiresAt) {
+    throw new CustomError("Refresh token expired", 401);
+  }
 
-  const newRefreshToken = generateRefreshToken({ id: decoded.id, role: decoded.role });
+  const decoded = verifyToken(refreshToken,  jwtConfig.refreshTokenSecret);
 
 
-  revokeRefreshToken(refreshToken);
-  refreshTokensStore.push(newRefreshToken);
+  const newAccessToken = generateAccessToken({ _id: decoded.uid, role: decoded.role });
+
+  const newRefreshToken = await generateRefreshToken({ _id: decoded.uid, role: decoded.role });
+ 
+  console.log("2- newRefreshToken", newRefreshToken);
+
+  // Revoke the old refresh token and store the replacement
+  storedToken.revokedAt = new Date();
+  storedToken.replacedByToken = newRefreshToken;
+  await storedToken.save();
 
   return {newAccessToken, newRefreshToken};
 };
 
-const revokeRefreshToken = (refreshToken) => {
-  // Remove refresh token from store
-  const index = refreshTokensStore.indexOf(refreshToken);
-  if (index !== -1) {
-    refreshTokensStore.splice(index, 1);
+
+const revokeRefreshToken = async (refreshToken) => {
+  const storedToken = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!storedToken) {
+    throw new CustomError("Refresh token not found", 401);
   }
+
+  storedToken.revokedAt = new Date();
+  await storedToken.save();
 };
+
 
 module.exports = { loginUser, registerUser, refreshTokens, revokeRefreshToken };

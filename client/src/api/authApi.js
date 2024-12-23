@@ -20,7 +20,7 @@ export const register = async (name, email, password) => {
 export const login = async (email, password) => {
   try {
     const response = await axiosInstance.post('auth/login', { email, password });
-    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('accessToken', response.data.accessToken);
     return response.data; // Return the server's response
   } catch (error) {
     console.error('Error during login:', error.response?.data || error.message);
@@ -31,7 +31,7 @@ export const login = async (email, password) => {
 
 export const logout = async () => {
     await axiosInstance.post(`auth/logout`);
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
 };
 
 

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwt');
 const CustomError = require('../utils/customError');
+const {verifyToken} = require('../utils/jwtUtils');
 
 const protect = (roles = []) => (req, _, next) => {
    
@@ -9,10 +10,10 @@ const protect = (roles = []) => (req, _, next) => {
        
 
         if (!token) {
-            throw new CustomError('Authentication required', 401);
+            throw new CustomError('Authentication required token null', 401);
         }
 
-        const decoded = jwt.verify(token, jwtConfig.accessTokenSecret);
+        const decoded = verifyToken(token, jwtConfig.accessTokenSecret);
         req.user = decoded;
 
         // Check role-based access
@@ -21,12 +22,7 @@ const protect = (roles = []) => (req, _, next) => {
         }
         next();
     } catch (error) {
-        if (error instanceof jwt.JsonWebTokenError) {
-            if (error.name === 'TokenExpiredError') {
-                return next(new CustomError('Access token expired', 401));
-              }
-            return next(new CustomError("Invalid token", 401));
-        }
+        
 
        
         next(error);
