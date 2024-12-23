@@ -16,6 +16,7 @@ const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
+
     updateUser: (state, action) => {
       const userData = action.payload;
       localStorage.setItem('user', JSON.stringify(userData)); // Save user to localStorage
@@ -24,12 +25,14 @@ const userSlice = createSlice({
       state.isAuthenticated = true;
       state.error = null;
     },
+
     failure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
+
     removeUser: (state) => {
-      localStorage.removeItem('user'); // Clear user from localStorage
+      localStorage.removeItem('user'); 
       state.user = null;
       state.error = null;
       state.isAuthenticated = false;

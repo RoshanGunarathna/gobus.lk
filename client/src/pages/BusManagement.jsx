@@ -1,44 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import '../styles/BusManagement.css';
-import { getAllBuses, addBus, updateBus, deleteBus, getBusById } from '../api/BusApi';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-
-// Toast Component
-const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [duration, onClose]);
-
-  const icons = {
-    success: <CheckCircle className="w-5 h-5 text-green-500" />,
-    error: <XCircle className="w-5 h-5 text-red-500" />,
-    info: <AlertCircle className="w-5 h-5 text-blue-500" />
-  };
-
-  const backgrounds = {
-    success: 'bg-green-100 border-green-500',
-    error: 'bg-red-100 border-red-500',
-    info: 'bg-blue-100 border-blue-500'
-  };
-
-  return (
-    <div className={`fixed top-4 right-4 flex items-center gap-2 px-4 py-3 rounded-lg border ${backgrounds[type]} shadow-lg animate-slide-in`}>
-      {icons[type]}
-      <p className="text-gray-800 font-medium">{message}</p>
-      <button 
-        onClick={onClose}
-        className="ml-4 text-gray-500 hover:text-gray-700"
-      >
-        <XCircle className="w-4 h-4" />
-      </button>
-    </div>
-  );
-};
+import { getAllBuses, addBus, updateBus, deleteBus , getBusById} from '../api/BusApi';
 
 function BusManagement() {
   const [buses, setBuses] = useState([]);
@@ -46,26 +9,14 @@ function BusManagement() {
   const [deleteDialog, setDeleteDialog] = useState(null);
   const [addModal, setAddModal] = useState(false);
   const [newBus, setNewBus] = useState({ _id: '', number: '', name: '', seat: 0 });
-  const [toast, setToast] = useState({
-    show: false,
-    message: '',
-    type: 'success'
-  });
+  const [toastMessage, setToastMessage] = useState('');
+   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+ 
 
-  const showToast = (message, type = 'success') => {
-    setToast({
-      show: true,
-      message,
-      type
-    });
-  };
 
-  const hideToast = () => {
-    setToast(prev => ({ ...prev, show: false }));
-  };
-
+  
   const fetchBuses = async () => {
     try {
       setIsLoading(true);
@@ -73,62 +24,84 @@ function BusManagement() {
       setBuses(busses);
     } catch (error) {
       console.error('Error fetching buses:', error);
-      showToast('Failed to fetch buses', 'error');
-      setBuses([]);
+      setToastMessage('Error: ' + (error.message || 'Failed to fetch buses'));
+      setBuses([]); // Set empty array on error
     } finally {
       setIsLoading(false);
     }
   };
 
+  
   useEffect(() => {
     fetchBuses();
   }, []);
 
-  const handleEdit = async (bus) => {
+  // const handleEdit = (bus) => setModalData(bus);
+
+   const handleEdit = async (bus) => {
+   
+   
+  
     try {
       const busData = await getBusById(bus._id);
+    
+      
       if (busData) {
         setModalData(busData);
-      }
+      } 
     } catch (error) {
       console.error('Error fetching bus details:', error);
-      showToast('Failed to fetch bus details', 'error');
+      showToastMessage('Failed to fetch bus details');
     }
+  };
+
+  
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   const handleCloseModal = () => setModalData(null);
 
   const handleSaveChanges = async () => {
-    if (validateForm()) {
-      try {
-        const updateData = {
-          _id: modalData._id,
-          number: modalData.number,
-          seat: modalData.seat,
-          name: modalData.name
-        };
-
-        await updateBus(updateData);
-        await fetchBuses();
+      if (validateForm()) {
+        try {
+        
+          // Create update data object
+          const updateData = {
+            _id: modalData._id,
+            number: modalData.number, 
+             seat: modalData.seat,
+            name: modalData.name
+          };
+          
+   
+          
+          await updateBus(updateData);
+          await fetchBuses();
         setModalData(null);
-        showToast('Bus updated successfully!', 'success');
-      } catch (error) {
-        console.error('Error updating bus:', error);
-        showToast(error.message || 'Failed to update bus', 'error');
+        setToastMessage('Successfully updated!');
+        } catch (error) {
+          console.error('Error updating route:', error);
+          setToastMessage(error.message || 'Failed to update bus');
+        }
+       
       }
-    }
-  };
+      setTimeout(() => setToastMessage(''), 3000);
+    };
 
   const handleDelete = async (_id) => {
     try {
       await deleteBus(_id);
       await fetchBuses();
       setDeleteDialog(null);
-      showToast('Bus deleted successfully!', 'success');
+      setToastMessage('Successfully deleted!');
     } catch (error) {
       console.error('Error deleting bus:', error);
-      showToast(error.message || 'Failed to delete bus', 'error');
+      setToastMessage(error.message || 'Failed to delete bus');
     }
+    setTimeout(() => setToastMessage(''), 3000);
   };
 
   const validateForm = () => {
@@ -136,22 +109,26 @@ function BusManagement() {
     if (!newBus.number) errors.number = 'Enter bus number';
     if (!newBus.name) errors.name = 'Enter bus name';
     if (!newBus.seat || isNaN(newBus.seat) || newBus.seat <= 0) errors.seat = 'Enter valid seat count';
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errors;
   };
 
   const handleAddNewBus = async () => {
-    if (validateForm()) {
-      try {
-        await addBus({ ...newBus, seat: parseInt(newBus.seat, 10) });
-        await fetchBuses();
-        showToast('Bus added successfully!', 'success');
-        handleCloseAddModal();
-      } catch (error) {
-        console.error('Error adding bus:', error);
-        showToast(error.message || 'Failed to add bus', 'error');
-      }
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
     }
+
+    try {
+      await addBus({ ...newBus, seat: parseInt(newBus.seat, 10) });
+      await fetchBuses();
+      setToastMessage('Successfully added!');
+      handleCloseAddModal();
+    } catch (error) {
+      console.error('Error adding bus:', error);
+      setToastMessage(error.message || 'Failed to add bus');
+    }
+    setTimeout(() => setToastMessage(''), 3000);
   };
 
   const handleCloseAddModal = () => {
@@ -290,17 +267,11 @@ function BusManagement() {
           </div>
         )}
 
+
         {/* Toast Notification */}
-        {toast.show && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onClose={hideToast}
-          />
-        )}
+        {showToast && ( <div className="bus-toast-unique">  {toastMessage}  </div>  )}
       </div>
     </div>
   );
 }
-
 export default BusManagement;

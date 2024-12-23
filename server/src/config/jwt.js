@@ -6,7 +6,7 @@ const jwtConfig = {
     accessTokenExpiry: '15m', 
     refreshTokenExpiry: '7d',
     // accessTokenExpiry: '3s', 
-    accessTokenExpiry: '15m', 
+    // accessTokenExpiry: '15m', 
     // refreshTokenExpiry: '7d',
     refreshTokenExpiryAsDateInt: 7,
 };
