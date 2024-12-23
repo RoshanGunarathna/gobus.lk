@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import { getAllUsers, getAUser, updateUser, deleteUser } from '../api/usersApi';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { fetchUserApi } from '../api/getUserApi';
 
 function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -10,14 +11,31 @@ function UserManagement() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [users, setUsers] = useState([]);
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
 
-  const currentUser = useSelector((state) => state.user.user); 
-
+  const currentUser = useSelector((state) => state.user.user);
 
   const showToast = (message) => {
     setToastMessage(message);
     setTimeout(() => setToastMessage(''), 3000);
   };
+
+  useEffect(() => {
+    fetchUserApi()
+      .then(response => {
+        const userData = response.user;  
+        setLoggedInUserId(userData._id);
+        return getAllUsers();
+      })
+      .then(response => {
+        if (response.users) {
+          setUsers(response.users);
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+      });
+  }, []);
 
   const handleEditClick = async (user) => {
     const userData = await handleGetAUser(user._id);
@@ -91,18 +109,6 @@ function UserManagement() {
     setSelectedUser(null);
   };
 
-  const handleGetUsers = async () => {
-    try {
-      const response = await getAllUsers();
-      setUsers(response.users);
-    } catch (err) {
-      console.error('Get Users Error:', err);
-      showToast(err.message || 'Get all users failed');
-    }
-  };
-
-  
-
   const handleGetAUser = async (uid) => {
     try {
       const response = await getAUser(uid);
@@ -113,9 +119,8 @@ function UserManagement() {
     }
   };
 
-  useEffect(() => {
-    handleGetUsers();
-  }, []);
+  console.log('Current state - loggedInUserId:', loggedInUserId);
+  console.log('Current state - users:', users);
 
   return (
     <div className="container">
@@ -135,16 +140,16 @@ function UserManagement() {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr
-                  key={user._id}
-                  className={
-                    currentUser && currentUser._id === user._id
-                      ? 'current-user-row'
-                      : ''
-                      
-                  } 
-                >
-                  <td>{user._id}</td>
+                <tr key={user._id}>
+                  <td>
+                    {user._id === loggedInUserId ? (
+                      <span style={{ fontWeight: 'bold'}}>
+                        {user._id} (Current User)
+                      </span>
+                    ) : (
+                      user._id
+                    )}
+                  </td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>{user.role}</td>
@@ -155,12 +160,14 @@ function UserManagement() {
                     >
                       Edit
                     </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDeleteClick(user)}
-                    >
-                      Delete
-                    </button>
+                    {user._id !== loggedInUserId && (
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteClick(user)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -168,7 +175,6 @@ function UserManagement() {
           </table>
         </div>
 
-        {/* Edit Modal */}
         {isModalOpen && (
           <div className="modal">
             <div className="modal-content">
@@ -203,7 +209,6 @@ function UserManagement() {
           </div>
         )}
 
-        {/* Delete Confirmation Dialog */}
         {isDeleteDialogOpen && (
           <div className="modal">
             <div className="modal-content">
@@ -225,7 +230,6 @@ function UserManagement() {
           </div>
         )}
 
-        {/* Toast Message */}
         {toastMessage && <div className="toast">{toastMessage}</div>}
       </div>
     </div>

@@ -3,6 +3,7 @@ import { removeUser } from '../redux/userSlice';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { logout } from '../api/authApi'; 
 import '../styles/Sidebar.css';
 
 const formatRole = (role) => {
@@ -14,9 +15,15 @@ function Sidebar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(removeUser());
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();    
+      dispatch(removeUser());
+      localStorage.removeItem('accessToken');  
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out', error);
+    }
   };
 
   const getSidebarItems = () => {
@@ -63,7 +70,6 @@ function Sidebar() {
 
   const sidebarItems = getSidebarItems();
   const panelLabel = getPanelLabel();
-  
 
   return (
     <div className="sidebar">
