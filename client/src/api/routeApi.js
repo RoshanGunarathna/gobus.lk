@@ -1,52 +1,63 @@
-// routeApi.js
 import axiosInstance from './axiosInstance';
 
+// Add new route
 export const addRoute = async (routeData) => {
   try {
     const response = await axiosInstance.post('/routeManagement/addRoute', routeData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An error occurred.' };
+    throw error;
   }
 };
 
-export const getRoutes = async () => {
+export const getAllRoutes = async () => {
   try {
     const response = await axiosInstance.get('/routeManagement/getAllRoutes');
-    return response.data;
+    console.log('Raw API Response:', response); // Add this to see the full response
+    return response;  // Return the full response to handle data extraction in the component
   } catch (error) {
-    throw error.response?.data || { message: 'An error occurred.' };
+    console.error('API Error:', error);
+    throw error;
   }
 };
 
+// Get route by ID
 export const getRouteById = async (id) => {
   try {
     const response = await axiosInstance.get(`/routeManagement/getRoute?id=${id}`);
-    return response.data;
+    return response;
   } catch (error) {
-    throw error.response?.data || { message: 'An error occurred.' };
+    console.error('Error fetching route by ID:', error);
+    throw error;
   }
 };
 
 
-
-// routeApi.js - Update these functions to match your backend routes
+// Update route
 export const updateRoute = async (routeData) => {
-    try {
-      const response = await axiosInstance.post('/routeManagement/updateRoute', routeData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'An error occurred.' };
-    }
-  };
-  
-  export const deleteRoute = async (id) => {
-    try {
-      const response = await axiosInstance.post('/routeManagement/deleteRoute', {
-        data: { id }
-      });
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'An error occurred.' };
-    }
-  };
+  try {
+    console.log('Sending update request with data:', routeData);
+    const response = await axiosInstance.post('routeManagement/updateRoute', {
+      _id: routeData._id,
+      routeId: routeData.routeId,
+      name: routeData.name
+    });
+
+    console.log('Route update response  data:', response);
+    return response;
+  } catch (error) {
+    console.error('API error details:', error.response?.data);
+    throw error;
+  }
+};
+
+
+// Delete route
+export const deleteRoute = async (id) => {
+  try {
+    const response = await axiosInstance.post('/routeManagement/deleteRoute', { id });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
