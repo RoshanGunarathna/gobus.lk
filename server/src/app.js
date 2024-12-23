@@ -5,6 +5,7 @@ const userManagementRoutes = require('./routes/userManagementRoutes');
 const busManagementRoutes = require('./routes/busManagementRoutes');
 const routeManagementRoutes = require('./routes/routeManagementRoutes');
 const sheduleManagementRoutes = require('./routes/sheduleManagementRoutes');
+const userRoutes = require('./routes/userRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
@@ -63,6 +64,7 @@ app.use(
 
 // Routes
 app.use('/api/auth', authRoutes); // Authentication-related routes
+app.use('/api/user', userRoutes);
 app.use('/api/userManagement', userManagementRoutes); 
 app.use('/api/busManagement', busManagementRoutes);
 app.use('/api/routeManagement', routeManagementRoutes);
