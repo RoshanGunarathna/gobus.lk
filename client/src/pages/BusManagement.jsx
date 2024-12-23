@@ -1,136 +1,115 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import '../styles/BusManagement.css';
-import { getAllBuses, addBus, updateBus, deleteBus , getBusById} from '../api/BusApi';
+import { getAllBuses, addBus, updateBus, deleteBus, getBusById } from '../api/BusApi';
 
 function BusManagement() {
   const [buses, setBuses] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(null);
   const [addModal, setAddModal] = useState(false);
-  const [newBus, setNewBus] = useState({ _id: '', number: '', name: '', seat: 0 });
+  const [newBus, setNewBus] = useState({ number: '', name: '', seat: 0 });
   const [toastMessage, setToastMessage] = useState('');
-   const [showToast, setShowToast] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
- 
 
-
-  
+  // Fetch buses from the API
   const fetchBuses = async () => {
     try {
       setIsLoading(true);
-      const busses = await getAllBuses();
-      setBuses(busses);
+      const fetchedBuses = await getAllBuses();
+      setBuses(fetchedBuses);
     } catch (error) {
-      console.error('Error fetching buses:', error);
-      setToastMessage('Error: ' + (error.message || 'Failed to fetch buses'));
-      setBuses([]); // Set empty array on error
+      showToastMessage('Error fetching buses: ' + (error.message || 'Unknown error'));
+      setBuses([]); // Clear list on failure
     } finally {
       setIsLoading(false);
     }
   };
 
-  
   useEffect(() => {
     fetchBuses();
   }, []);
 
-  // const handleEdit = (bus) => setModalData(bus);
-
-   const handleEdit = async (bus) => {
-   
-   
-  
-    try {
-      const busData = await getBusById(bus._id);
-    
-      
-      if (busData) {
-        setModalData(busData);
-      } 
-    } catch (error) {
-      console.error('Error fetching bus details:', error);
-      showToastMessage('Failed to fetch bus details');
-    }
-  };
-
-  
+  // Show toast notifications
   const showToastMessage = (message) => {
     setToastMessage(message);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  const handleCloseModal = () => setModalData(null);
+  // Handle opening the Edit modal
+  const handleEdit = async (bus) => {
+    try {
+      const busData = await getBusById(bus._id);
+      if (busData) setModalData(busData);
+    } catch (error) {
+      showToastMessage('Failed to fetch bus details');
+    }
+  };
 
+  // Save changes for an existing bus
   const handleSaveChanges = async () => {
-      if (validateForm()) {
-        try {
-        
-          // Create update data object
-          const updateData = {
-            _id: modalData._id,
-            number: modalData.number, 
-             seat: modalData.seat,
-            name: modalData.name
-          };
-          
-   
-          
-          await updateBus(updateData);
-          await fetchBuses();
+    if (validateModalForm()) {
+      try {
+        await updateBus(modalData);
+        await fetchBuses();
         setModalData(null);
-        setToastMessage('Successfully updated!');
-        } catch (error) {
-          console.error('Error updating route:', error);
-          setToastMessage(error.message || 'Failed to update bus');
-        }
-       
+        showToastMessage('Bus updated successfully!');
+      } catch (error) {
+        showToastMessage(error.message || 'Failed to update bus');
       }
-      setTimeout(() => setToastMessage(''), 3000);
-    };
+    }
+  };
 
+  // Delete a bus
   const handleDelete = async (_id) => {
     try {
       await deleteBus(_id);
       await fetchBuses();
       setDeleteDialog(null);
-      setToastMessage('Successfully deleted!');
+      showToastMessage('Bus deleted successfully!');
     } catch (error) {
-      console.error('Error deleting bus:', error);
-      setToastMessage(error.message || 'Failed to delete bus');
+      showToastMessage(error.message || 'Failed to delete bus');
     }
-    setTimeout(() => setToastMessage(''), 3000);
   };
 
+  // Validate the Add New Bus form
   const validateForm = () => {
     const errors = {};
-    if (!newBus.number) errors.number = 'Enter bus number';
-    if (!newBus.name) errors.name = 'Enter bus name';
-    if (!newBus.seat || isNaN(newBus.seat) || newBus.seat <= 0) errors.seat = 'Enter valid seat count';
-    return errors;
+    if (!newBus.number.trim()) errors.number = 'Enter a valid bus number';
+    if (!newBus.name.trim()) errors.name = 'Enter a valid bus name';
+    if (!newBus.seat || isNaN(newBus.seat) || newBus.seat <= 0) errors.seat = 'Enter a valid seat count';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
+  // Validate the Edit Modal form
+  const validateModalForm = () => {
+    const errors = {};
+    if (!modalData.number.trim()) errors.number = 'Enter a valid bus number';
+    if (!modalData.name.trim()) errors.name = 'Enter a valid bus name';
+    if (!modalData.seat || isNaN(modalData.seat) || modalData.seat <= 0) errors.seat = 'Enter a valid seat count';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Add a new bus
   const handleAddNewBus = async () => {
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
+    if (validateForm()) {
+      try {
+        await addBus({ ...newBus, seat: parseInt(newBus.seat, 10) });
+        await fetchBuses();
+        showToastMessage('Bus added successfully!');
+        handleCloseAddModal();
+      } catch (error) {
+        showToastMessage(error.message || 'Failed to add bus');
+      }
     }
-
-    try {
-      await addBus({ ...newBus, seat: parseInt(newBus.seat, 10) });
-      await fetchBuses();
-      setToastMessage('Successfully added!');
-      handleCloseAddModal();
-    } catch (error) {
-      console.error('Error adding bus:', error);
-      setToastMessage(error.message || 'Failed to add bus');
-    }
-    setTimeout(() => setToastMessage(''), 3000);
   };
 
+  // Close Add Modal
   const handleCloseAddModal = () => {
     setAddModal(false);
     setNewBus({ number: '', name: '', seat: '' });
@@ -140,8 +119,9 @@ function BusManagement() {
   return (
     <div className="container">
       <Sidebar />
-      <h1>Bus List</h1>
       <div className="table-containerbu">
+      <h1>Bus List </h1>
+
         <button className="add-bus-btn" onClick={() => setAddModal(true)}>Add New Bus</button>
 
         {isLoading ? (
@@ -174,6 +154,53 @@ function BusManagement() {
           </table>
         )}
 
+        {/* Toast Notification */}
+        {showToast && (
+          <div className="bus-toast-unique">
+            {toastMessage}
+          </div>
+        )}
+
+        {/* Add New Bus Modal */}
+        {addModal && (
+          <div className="bus-modal-overlay-unique">
+            <div className="bus-modal-unique">
+              <h2>Add New Bus</h2>
+              <label>
+                Bus Number:
+                <input
+                  type="text"
+                  value={newBus.number}
+                  onChange={(e) => setNewBus({ ...newBus, number: e.target.value })}
+                />
+                {formErrors.number && <span className="bus-error-unique">{formErrors.number}</span>}
+              </label>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  value={newBus.name}
+                  onChange={(e) => setNewBus({ ...newBus, name: e.target.value })}
+                />
+                {formErrors.name && <span className="bus-error-unique">{formErrors.name}</span>}
+              </label>
+              <label>
+                Seat:
+                <input
+                  type="number"
+                  value={newBus.seat}
+                  onChange={(e) => setNewBus({ ...newBus, seat: e.target.value })}
+                />
+                {formErrors.seat && <span className="bus-error-unique">{formErrors.seat}</span>}
+              </label>
+              <div className="bus-modal-buttons-unique">
+                <button className="bus-save-btn-unique" onClick={handleAddNewBus}>Add</button>
+                <button className="bus-close-btn-unique" onClick={handleCloseAddModal}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Edit Modal */}
         {modalData && (
           <div className="bus-modal-overlay-unique">
@@ -200,55 +227,12 @@ function BusManagement() {
                 <input
                   type="number"
                   value={modalData.seat}
-                  onChange={(e) => setModalData({ ...modalData, seat: parseInt(e.target.value) })}
+                  onChange={(e) => setModalData({ ...modalData, seat: parseInt(e.target.value, 10) })}
                 />
               </label>
               <div className="bus-modal-buttons-unique">
                 <button className="bus-save-btn-unique" onClick={handleSaveChanges}>Update</button>
-                <button className="bus-close-btn-unique" onClick={handleCloseModal}>Close</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Add New Bus Modal */}
-        {addModal && (
-          <div className="bus-modal-overlay-unique">
-            <div className="bus-modal-unique">
-              <h2>Add New Bus</h2>
-              <label>
-                Bus Number:
-                <input
-                  type="text"
-                  placeholder="Enter bus number"
-                  value={newBus.number}
-                  onChange={(e) => setNewBus({ ...newBus, number: e.target.value })}
-                />
-                {formErrors.number && <span className="bus-error-unique">{formErrors.number}</span>}
-              </label>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  placeholder="Enter bus name"
-                  value={newBus.name}
-                  onChange={(e) => setNewBus({ ...newBus, name: e.target.value })}
-                />
-                {formErrors.name && <span className="bus-error-unique">{formErrors.name}</span>}
-              </label>
-              <label>
-                Seat:
-                <input
-                  type="number"
-                  placeholder="Enter seat count"
-                  value={newBus.seat}
-                  onChange={(e) => setNewBus({ ...newBus, seat: e.target.value })}
-                />
-                {formErrors.seat && <span className="bus-error-unique">{formErrors.seat}</span>}
-              </label>
-              <div className="bus-modal-buttons-unique">
-                <button className="bus-save-btn-unique" onClick={handleAddNewBus}>Add</button>
-                <button className="bus-close-btn-unique" onClick={handleCloseAddModal}>Cancel</button>
+                <button className="bus-close-btn-unique" onClick={() => setModalData(null)}>Close</button>
               </div>
             </div>
           </div>
@@ -264,14 +248,6 @@ function BusManagement() {
                 <button className="bus-cancel-btn-unique" onClick={() => setDeleteDialog(null)}>Cancel</button>
               </div>
             </div>
-          </div>
-        )}
-
-
-        {/* Toast Notification */}
-        {showToast && (
-          <div className="bus-toast-unique">
-            {toastMessage}
           </div>
         )}
       </div>
