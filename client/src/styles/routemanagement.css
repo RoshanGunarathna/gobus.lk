@@ -168,6 +168,8 @@
     margin-top: 49px;
     margin-left: 100px;
     padding: 7px 30px 10px 30px;
+    overflow-y: auto;
 
 
   }
+  
