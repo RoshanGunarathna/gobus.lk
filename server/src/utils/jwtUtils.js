@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwt');
 const CustomError = require('../utils/customError');
+const {RefreshToken} = require('../models');
 
 // Generate an access token
 const generateAccessToken = (user) => {
@@ -13,25 +14,46 @@ const generateAccessToken = (user) => {
     return response;
 };
 
-// Generate a refresh token
-const generateRefreshToken = (user) => {
-    const response = jwt.sign(
+
+const generateRefreshToken = async (user) => {
+   
+    const token = jwt.sign(
         { uid: user._id, role: user.role },
         jwtConfig.refreshTokenSecret,
         { expiresIn: jwtConfig.refreshTokenExpiry }
     );
-    console.log("Refresh Token Generate Successfull");
-    return response;
-};
+  
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + jwtConfig.refreshTokenExpiryAsDateInt);
+  
+    await RefreshToken.create({
+      token,
+      userId: user._id,
+      expiresAt,
+    });
+
+    console.log("Refresh Token Generate Successfull ");
+  
+    return token;
+  };
+
 
 // Verify a token
 const verifyToken = (token, secret) => {
     try {
+      
         const response = jwt.verify(token, secret);
         console.log("Token Verification Successfull");
         return response;
-    } catch (err) {
-        throw new CustomError("Invalid token", 403);
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            if (error.name === 'TokenExpiredError') {
+                throw new CustomError('Access token expired', 401);
+              }
+              throw new CustomError("Invalid token", 401);
+        }
+
+        throw(error);
     }
 };
 

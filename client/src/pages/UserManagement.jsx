@@ -12,7 +12,7 @@ function UserManagement() {
   const [users, setUsers] = useState([]);
 
   const currentUser = useSelector((state) => state.user.user); 
-  console.log(currentUser);
+
 
   const showToast = (message) => {
     setToastMessage(message);

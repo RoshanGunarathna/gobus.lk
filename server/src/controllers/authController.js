@@ -25,10 +25,10 @@ const login = async (req, res, next) => {
   }
 };
 
-const refreshToken = (req, res, next) => {
-  const refreshToken = req.cookies.refreshToken;
+const refreshToken = async (req, res, next) => {
   try {
-    const { newAccessToken, newRefreshToken } = refreshTokens(refreshToken);
+    const refreshToken = req.cookies.refreshToken;
+    const { newAccessToken, newRefreshToken } = await refreshTokens(refreshToken);
     setCookie(res, 'refreshToken', newRefreshToken);
     res.json({ accessToken: newAccessToken });
   } catch (err) {
