@@ -21,7 +21,7 @@ export const login = async (email, password) => {
   try {
     const response = await axiosInstance.post('auth/login', { email, password });
     localStorage.setItem('accessToken', response.data.accessToken);
-    return response.data; // Return the server's response
+    return response.data.user; // Return the server's response
   } catch (error) {
     console.error('Error during login:', error.response?.data || error.message);
     throw error.response?.data || { message: 'An error occurred during login.' };

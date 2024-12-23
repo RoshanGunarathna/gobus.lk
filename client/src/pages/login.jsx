@@ -20,15 +20,16 @@ const Login = () => {
 
     try {
      // dispatch(loading());
-      const response = await login(email, password);
+      const user = await login(email, password);
     
 
+    
       // Extract user data from the nested structure
       const userData = {
-        id: response.user._id,
-        name: response.user.name,
-        email: response.user.email,
-        role: response.user.role,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       };
 
       navigate("/dashboard");

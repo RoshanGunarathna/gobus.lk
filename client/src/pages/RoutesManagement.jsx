@@ -24,7 +24,7 @@ function RoutesManagement() {
     try {
       const response = await getAllRoutes();
       // Let's log the response to see its structure
-      console.log('API Response:', response);
+     
       
       // Check if response.data exists and handle accordingly
       if (response?.data?.routes) {
@@ -45,13 +45,12 @@ function RoutesManagement() {
 
  const handleEditClick = async (route) => {
   // Add this console log
-  console.log('Selected route object:', route);
-  console.log('Route _id:', route._id);  // Add this specific check
+ 
 
   try {
     const response = await getRouteById(route._id);
     // Add this to see what comes from the API
-    console.log('API response data:', response);
+    
     
     if (response?.data?.route) {
       setCurrentRoute(response.data.route);
@@ -77,8 +76,7 @@ function RoutesManagement() {
   const handleUpdate = async () => {
     if (validateForm()) {
       try {
-        // Add these console logs
-        console.log('Current route state:', currentRoute);
+    
         
         // Create update data object
         const updateData = {
@@ -87,8 +85,7 @@ function RoutesManagement() {
           name: currentRoute.name
         };
         
-        // Log the exact data being sent
-        console.log('Data being sent to backend:', updateData);
+       
         
         await updateRoute(updateData);
         await fetchRoutes();

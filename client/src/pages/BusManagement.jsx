@@ -39,14 +39,12 @@ function BusManagement() {
   // const handleEdit = (bus) => setModalData(bus);
 
    const handleEdit = async (bus) => {
-    // Add this console log
-    console.log('Selected bus object:', bus);
-    console.log('Route _id:', bus._id);  // Add this specific check
+   
+   
   
     try {
       const busData = await getBusById(bus._id);
-      // Add this to see what comes from the API
-      console.log('API response data:', busData);
+    
       
       if (busData) {
         setModalData(busData);
@@ -78,8 +76,7 @@ function BusManagement() {
             name: modalData.name
           };
           
-          // Log the exact data being sent
-          console.log('Data being sent to backend:', updateData);
+   
           
           await updateBus(updateData);
           await fetchBuses();

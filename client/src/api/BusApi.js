@@ -14,10 +14,10 @@ export const getAllBuses = async () => {
 export const getBusById = async (id) => {
   try {
     const response = await axiosInstance.get('busManagement/getBus', { params:  {id} });
-  //  console.log("Get bus response", response);
+  
     return response.data.bus; 
   } catch (error) {
-    console.log("Get bus Error response", error);
+  
     throw error.response?.data || { message: 'An error occurred.' };
   }
 };
@@ -38,22 +38,8 @@ export const updateBus = async (busData) => {
   try {
 
 
-  
-
-
-    // "_id": "676700cfc4e2f9a54d45bba7",
-    // "name": "janii",
-    // "number": "NC-5543",
-    // "seat": 25
-
-    // _id: '676700cfc4e2f9a54d45bba7', routeId: undefined, name: 'janiiii'
-
-
-    console.log("busData",busData ); 
-    
-
     const response = await axiosInstance.post('busManagement/updateBus', {id: busData._id, number: busData.number, name: busData.name, seat: busData.seat});
-    console.log(response.data); // Debugging line, check what data is returned
+
     return response.data;
 
   } catch (error) {

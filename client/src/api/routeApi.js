@@ -13,7 +13,7 @@ export const addRoute = async (routeData) => {
 export const getAllRoutes = async () => {
   try {
     const response = await axiosInstance.get('routeManagement/getAllRoutes');
-    console.log('Raw API Response:', response); // Add this to see the full response
+ 
     return response;  // Return the full response to handle data extraction in the component
   } catch (error) {
     console.error('API Error:', error);
@@ -36,7 +36,7 @@ export const getRouteById = async (id) => {
 // Update route
 export const updateRoute = async (routeData) => {
   try {
-    console.log('Sending update request with data:', routeData);
+   
 
     const response = await axiosInstance.post('routeManagement/updateRoute', {
       id: routeData._id,
@@ -44,7 +44,7 @@ export const updateRoute = async (routeData) => {
       name: routeData.name
     });
 
-    console.log('Route update response  data:', response);
+   
     return response;
   } catch (error) {
     console.error('API error details:', error.response?.data);
