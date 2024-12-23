@@ -3,7 +3,7 @@ const { User } = require('../models');
 const { RefreshToken } = require('../models');
 require('dotenv').config();
 const CustomError = require('../utils/customError');
-const { generateAccessToken, generateRefreshToken, verifyToken } = require('../utils/jwtUtils');
+const { generateAccessToken, generateRefreshToken, verifyToken, revokeRefreshToken } = require('../utils/jwtUtils');
 const jwtConfig = require('../config/jwt');
 
 
@@ -36,8 +36,12 @@ const loginUser = async (email, password) => {
     throw new CustomError("Invalid credentials", 400);
   }
 
-  const accessToken = generateAccessToken(user);
+  
   const refreshToken = await generateRefreshToken(user);
+
+
+  const accessToken = generateAccessToken(user);
+
 
   // Convert Mongoose document to plain object
   const userObj = user.toObject();
@@ -60,13 +64,13 @@ const refreshTokens = async (refreshToken) => {
   if (!storedToken) {
     throw new CustomError("Refresh token is not valid", 401);
   }
-  console.log("1- oldRefreshToken", storedToken)
 
-  // if (storedToken.revokedAt) {
+
+  if (storedToken.revokedAt) {
     
-  //   console.log(storedToken.revokedAt)
-  //   throw new CustomError("Refresh token has been revoked", 401);
-  // }
+
+    throw new CustomError("Refresh token has been revoked", 401);
+  }
 
   if (new Date() > storedToken.expiresAt) {
     throw new CustomError("Refresh token expired", 401);
@@ -79,27 +83,16 @@ const refreshTokens = async (refreshToken) => {
 
   const newRefreshToken = await generateRefreshToken({ _id: decoded.uid, role: decoded.role });
  
-  console.log("2- newRefreshToken", newRefreshToken);
+
 
   // Revoke the old refresh token and store the replacement
-  storedToken.revokedAt = new Date();
-  storedToken.replacedByToken = newRefreshToken;
-  await storedToken.save();
+  revokeRefreshToken({oldRefreshToken: refreshToken, newRefreshToken});
 
   return {newAccessToken, newRefreshToken};
 };
 
 
-const revokeRefreshToken = async (refreshToken) => {
-  const storedToken = await RefreshToken.findOne({ token: refreshToken });
 
-  if (!storedToken) {
-    throw new CustomError("Refresh token not found", 401);
-  }
-
-  storedToken.revokedAt = new Date();
-  await storedToken.save();
-};
 
 
 module.exports = { loginUser, registerUser, refreshTokens, revokeRefreshToken };

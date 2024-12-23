@@ -42,8 +42,6 @@ const getRouteById = async (data) => {
 };
 
 
-
-
 const updateRouteById = async (data) => {
   try {
   

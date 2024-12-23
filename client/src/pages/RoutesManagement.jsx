@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/routemanagement.css';
 import Sidebar from '../components/Sidebar';
-import { addRoute, getRoutes, getRouteById, updateRoute, deleteRoute } from '../api/routeApi';
+import { addRoute, getAllRoutes, getRouteById, updateRoute, deleteRoute } from '../api/routeApi';
 
 function RoutesManagement() {
   const [routes, setRoutes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [currentRoute, setCurrentRoute] = useState({ routeId: '', name: '' });
+  const [currentRoute, setCurrentRoute] = useState({ _id:'', routeId: '', name: '' });
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
@@ -20,51 +20,84 @@ function RoutesManagement() {
   }, []);
 
   const fetchRoutes = async () => {
-    try {
-      const response = await getRoutes();
-      if (response && response.routes) {
-        setRoutes(response.routes);
-      }
-    } catch (error) {
-      showToastMessage('Error fetching routes: ' + error.message);
-    }
-  };
-
-  const handleEditClick = async (route) => {
-    setIsModalOpen(true);
     setIsLoading(true);
-    
     try {
-      const response = await getRouteById(route._id);
-      if (response && response.route) {
-        setCurrentRoute(response.route);
+      const response = await getAllRoutes();
+      // Let's log the response to see its structure
+     
+      
+      // Check if response.data exists and handle accordingly
+      if (response?.data?.routes) {
+        setRoutes(response.data.routes);
+      } else if (response?.data) {
+        // If the data is directly in response.data
+        setRoutes(response.data);
+      } else {
+        showToastMessage('Invalid data format received');
       }
     } catch (error) {
-      showToastMessage('Error fetching route details: ' + error.message);
-      setIsModalOpen(false);
+      console.error('Error fetching routes:', error);
+      showToastMessage('Failed to fetch routes');
     } finally {
       setIsLoading(false);
     }
   };
+
+ const handleEditClick = async (route) => {
+  // Add this console log
+ 
+
+  try {
+    const response = await getRouteById(route._id);
+    // Add this to see what comes from the API
+    
+    
+    if (response?.data?.route) {
+      setCurrentRoute(response.data.route);
+    } 
+    
+    setIsModalOpen(true);
+  } catch (error) {
+    console.error('Error fetching route details:', error);
+    showToastMessage('Failed to fetch route details');
+  }
+};
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentRoute({ ...currentRoute, [name]: value });
+    // Clear the error for this field when user starts typing
+    if (formErrors[name]) {
+      setFormErrors({ ...formErrors, [name]: '' });
+    }
   };
 
   const handleUpdate = async () => {
-    try {
-      setIsLoading(true);
-      await updateRoute(currentRoute);
-      await fetchRoutes(); // Refresh the routes list
-      setIsModalOpen(false);
-      showToastMessage('Route updated successfully!');
-    } catch (error) {
-      showToastMessage('Error updating route: ' + error.message);
-    } finally {
-      setIsLoading(false);
+    if (validateForm()) {
+      try {
+    
+        
+        // Create update data object
+        const updateData = {
+          _id: currentRoute._id,
+          routeId: currentRoute.routeId,
+          name: currentRoute.name
+        };
+        
+       
+        
+        await updateRoute(updateData);
+        await fetchRoutes();
+        setIsModalOpen(false);
+        showToastMessage('Route updated successfully!');
+      } catch (error) {
+        console.error('Error updating route:', error);
+        showToastMessage('Failed to update route');
+      }
     }
   };
+  
 
   const handleDeleteClick = (route) => {
     setRouteToDelete(route);
@@ -73,24 +106,22 @@ function RoutesManagement() {
 
   const confirmDelete = async () => {
     try {
-      setIsLoading(true);
       await deleteRoute(routeToDelete._id);
-      await fetchRoutes(); // Refresh the routes list
+      await fetchRoutes();
       setIsDeleteDialogOpen(false);
-      showToastMessage(`Route ${routeToDelete.routeId} deleted successfully!`);
+      showToastMessage(`Route deleted successfully!`);
     } catch (error) {
-      showToastMessage('Error deleting route: ' + error.message);
-    } finally {
-      setIsLoading(false);
+      console.error('Error deleting route:', error);
+      showToastMessage('Failed to delete route');
     }
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!currentRoute.routeId.trim()) {
+    if (!currentRoute.routeId?.trim()) {
       errors.routeId = 'Route ID is required.';
     }
-    if (!currentRoute.name.trim()) {
+    if (!currentRoute.name?.trim()) {
       errors.name = 'Route Name is required.';
     }
     setFormErrors(errors);
@@ -106,18 +137,14 @@ function RoutesManagement() {
   const handleAddNewRoute = async () => {
     if (validateForm()) {
       try {
-        setIsLoading(true);
         await addRoute(currentRoute);
         await fetchRoutes();
         setIsAddModalOpen(false);
         showToastMessage('Route added successfully!');
       } catch (error) {
-        showToastMessage('Error adding route: ' + error.message);
-      } finally {
-        setIsLoading(false);
+        console.error('Error adding route:', error);
+        showToastMessage('Failed to add route');
       }
-    } else {
-      showToastMessage('Please correct the errors in the form.');
     }
   };
 
@@ -145,26 +172,36 @@ function RoutesManagement() {
               </tr>
             </thead>
             <tbody>
-              {routes.map((route) => (
-                <tr key={route._id}>
-                  <td>{route.routeId}</td>
-                  <td>{route.name}</td>
-                  <td>
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEditClick(route)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDeleteClick(route)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan="3" style={{ textAlign: 'center' }}>Loading...</td>
                 </tr>
-              ))}
+              ) : routes.length === 0 ? (
+                <tr>
+                  <td colSpan="3" style={{ textAlign: 'center' }}>No routes found</td>
+                </tr>
+              ) : (
+                routes.map((route) => (
+                  <tr key={route._id}>
+                    <td>{route.routeId}</td>
+                    <td>{route.name}</td>
+                    <td>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEditClick(route)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteClick(route)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
 
@@ -173,47 +210,36 @@ function RoutesManagement() {
             <div className="modal-overlay">
               <div className="modal-content">
                 <h2>Edit Bus Routes Details</h2>
-                {isLoading ? (
-                  <div className="loading-spinner">Loading...</div>
-                ) : (
-                  <>
-                    <label>
-                      Route ID
-                      <input
-                        type="text"
-                        name="routeId"
-                        value={currentRoute.routeId}
-                        onChange={handleInputChange}
-                        disabled
-                      />
-                    </label>
-                    <label>
-                      Route Name
-                      <input
-                        type="text"
-                        name="name"
-                        value={currentRoute.name}
-                        onChange={handleInputChange}
-                      />
-                    </label>
-                    <div className="modal-buttons">
-                      <button 
-                        className="update-button" 
-                        onClick={handleUpdate}
-                        disabled={isLoading}
-                      >
-                        Update
-                      </button>
-                      <button
-                        className="cancel-buttonmdl"
-                        onClick={() => setIsModalOpen(false)}
-                        disabled={isLoading}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </>
-                )}
+                <label>
+                  Route ID
+                  <input
+                    type="text"
+                    name="routeId"
+                    value={currentRoute.routeId || ''}
+                    onChange={handleInputChange}
+                    disabled
+                  />
+                </label>
+                <label>
+                  Route Name
+                  <input
+                    type="text"
+                    name="name"
+                    value={currentRoute.name || ''}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <div className="modal-buttons">
+                  <button className="update-button" onClick={handleUpdate}>
+                    Update
+                  </button>
+                  <button
+                    className="cancel-buttonmdl"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -250,17 +276,12 @@ function RoutesManagement() {
                   )}
                 </label>
                 <div className="modal-buttons">
-                  <button 
-                    className="add-route-new" 
-                    onClick={handleAddNewRoute}
-                    disabled={isLoading}
-                  >
+                  <button className="add-route-new" onClick={handleAddNewRoute}>
                     Add Route
                   </button>
                   <button
                     className="cancel-buttonmdl"
                     onClick={() => setIsAddModalOpen(false)}
-                    disabled={isLoading}
                   >
                     Cancel
                   </button>
@@ -276,20 +297,15 @@ function RoutesManagement() {
                 <h2>Confirm Delete</h2>
                 <p>
                   Are you sure you want to delete the route with ID{' '}
-                  {routeToDelete.routeId}?
+                  {routeToDelete?.routeId}?
                 </p>
                 <div className="modal-buttons">
-                  <button 
-                    className="delete-buttonmd3" 
-                    onClick={confirmDelete}
-                    disabled={isLoading}
-                  >
+                  <button className="delete-buttonmd3" onClick={confirmDelete}>
                     Delete
                   </button>
                   <button
                     className="cancel-button"
                     onClick={() => setIsDeleteDialogOpen(false)}
-                    disabled={isLoading}
                   >
                     Cancel
                   </button>
