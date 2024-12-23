@@ -3,7 +3,7 @@ import axiosInstance from './axiosInstance';
 // Add new route
 export const addRoute = async (routeData) => {
   try {
-    const response = await axiosInstance.post('/routeManagement/addRoute', routeData);
+    const response = await axiosInstance.post('routeManagement/addRoute', routeData);
     return response.data;
   } catch (error) {
     throw error;
@@ -12,7 +12,7 @@ export const addRoute = async (routeData) => {
 
 export const getAllRoutes = async () => {
   try {
-    const response = await axiosInstance.get('/routeManagement/getAllRoutes');
+    const response = await axiosInstance.get('routeManagement/getAllRoutes');
     console.log('Raw API Response:', response); // Add this to see the full response
     return response;  // Return the full response to handle data extraction in the component
   } catch (error) {
@@ -24,7 +24,7 @@ export const getAllRoutes = async () => {
 // Get route by ID
 export const getRouteById = async (id) => {
   try {
-    const response = await axiosInstance.get(`/routeManagement/getRoute?id=${id}`);
+    const response = await axiosInstance.get(`routeManagement/getRoute?id=${id}`);
     return response;
   } catch (error) {
     console.error('Error fetching route by ID:', error);
@@ -38,7 +38,7 @@ export const updateRoute = async (routeData) => {
   try {
     console.log('Sending update request with data:', routeData);
     const response = await axiosInstance.post('routeManagement/updateRoute', {
-      _id: routeData._id,
+      id: routeData._id,
       routeId: routeData.routeId,
       name: routeData.name
     });

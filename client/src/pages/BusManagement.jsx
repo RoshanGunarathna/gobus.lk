@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import '../styles/BusManagement.css';
-import { getAllBuses, addBus, updateBus, deleteBus } from '../api/BusApi';
+import { getAllBuses, addBus, updateBus, deleteBus, getBusById } from '../api/BusApi'; // Ensure getBusById is imported
 
 function BusManagement() {
   const [buses, setBuses] = useState([]);
@@ -17,7 +17,6 @@ function BusManagement() {
     fetchBuses();
   }, []);
 
-  
   const fetchBuses = async () => {
     try {
       setIsLoading(true);
@@ -32,9 +31,17 @@ function BusManagement() {
       setIsLoading(false);
     }
   };
-  
 
-  const handleEdit = (bus) => setModalData(bus);
+  const handleEdit = async (busId) => {
+    try {
+      const bus = await getBusById(busId); // Fetch bus details by ID
+      setModalData(bus.data || bus); // Set the fetched bus data to the modal
+    } catch (error) {
+      console.error('Error fetching bus by ID:', error);
+      setToastMessage('Failed to fetch bus details');
+      setTimeout(() => setToastMessage(''), 3000);
+    }
+  };
 
   const handleCloseModal = () => setModalData(null);
 
@@ -125,7 +132,7 @@ function BusManagement() {
                   <td>{bus.name}</td>
                   <td>{bus.seat}</td>
                   <td>
-                    <button className="edit-btn" onClick={() => handleEdit(bus)}>Edit</button>
+                    <button className="edit-btn" onClick={() => handleEdit(bus._id)}>Edit</button>
                     <button className="delete-btn" onClick={() => setDeleteDialog(bus._id)}>Delete</button>
                   </td>
                 </tr>
