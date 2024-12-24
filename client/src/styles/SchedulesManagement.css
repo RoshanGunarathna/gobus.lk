@@ -177,14 +177,15 @@
     animation: fadeInOut 3s;
   }
 
-  .table-container {
-    width: 90%;
-    margin-right: 140px;
+  .table-containers {
+    width: 100%;
+    margin-right: -35px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    overflow-y: auto;
     padding: 20px;
+    font-size: 14px;
 }
   
   @keyframes fadeInOut {
