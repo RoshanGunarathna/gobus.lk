@@ -6,7 +6,7 @@ const getUserById = async (data) => {
   try {
 
     
-
+console.log(data.uid);
 
     const user = await User.findById(data.uid).select('-__v -password');
 
