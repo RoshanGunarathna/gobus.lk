@@ -1,8 +1,8 @@
 
 const { Schedule } = require('../models');
 const CustomError = require('../utils/customError');
-const { getRouteById } = require('./routeManagementService');
-const { getBusById } = require('./busManagementService');
+const { Bus } = require('../models');
+const { Route } = require('../models');
 
 
 
@@ -13,7 +13,7 @@ const isScheduleExist = async (scheduleId) => {
 const addASchedule = async (data) => {
   try {
 
-    const existingSchedule = await isScheduleExist(data.id);
+    const existingSchedule = await isScheduleExist(data.scheduleId);
     if (existingSchedule) {
       throw new CustomError("Schedule already exists", 400);
     }
@@ -48,6 +48,12 @@ const getScheduleById = async (data) => {
 
     const routeData = await getRouteById({id: schedule.routeId});
     const busData = await getBusById({id: schedule.busId});
+
+    if(routeData && busData){
+      if (!schedule) {
+        throw new CustomError("Data Retrived Fail! : RouteData Or busData not found", 404);
+      }
+    }
 
     schedule = {
       _id: schedule._id,
@@ -120,21 +126,26 @@ const getSchedules = async () => {
 
                 const routeData = await getRouteById({id: schedule.routeId});
                 const busData = await getBusById({id: schedule.busId});
+
+                if(routeData && busData){
+                  scheduleList.push({
+                    _id: schedule._id,
+                    scheduleId: schedule.scheduleId,
+                    seatPrice: schedule.seatPrice,
+                    bookedSeats: schedule.bookedSeats,
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    route: routeData,
+                    bus: busData,
+                  }); 
+                }
                        
-                scheduleList.push({
-                  _id: schedule._id,
-                  scheduleId: schedule.scheduleId,
-                  seatPrice: schedule.seatPrice,
-                  bookedSeats: schedule.bookedSeats,
-                  startTime: schedule.startTime,
-                  endTime: schedule.endTime,
-                  route: routeData,
-                  bus: busData,
-                });   
+                 
     
                 })
             );
         }
+
 
    
 
@@ -143,6 +154,27 @@ const getSchedules = async () => {
    
     throw error;
   }
+};
+
+
+const getRouteById = async (data) => {
+
+    const route = await Route.findById(data.id).select('-__v');
+ 
+
+    return route;
+ 
+};
+
+
+const getBusById = async (data) => {
+ 
+    const bus = await Bus.findById(data.id).select('-__v');
+    
+  
+
+    return bus;
+  
 };
 
 

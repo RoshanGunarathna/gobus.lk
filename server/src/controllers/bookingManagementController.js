@@ -36,7 +36,7 @@ const updateBooking = async (req, res, next) => {
 
   try {
 
-    const booking = await updateBookingById({user:req.user, body: req.body});
+    const booking = await updateBookingById(req.body);
     handleResponse(res, 200, 'Booking Update successfully', {booking:booking});
   } catch (err) {
     next(err);
@@ -65,6 +65,8 @@ const deleteBooking = async (req, res, next) => {
     next(err);
   }
 }
+
+
 
 module.exports = {
   getBooking,
