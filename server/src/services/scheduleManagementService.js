@@ -3,7 +3,6 @@ const { Schedule } = require('../models');
 const CustomError = require('../utils/customError');
 const { getRouteById } = require('./routeManagementService');
 const { getBusById } = require('./busManagementService');
-const { ValidatorsImpl } = require('express-validator/lib/chain');
 
 
 
@@ -18,10 +17,18 @@ const addASchedule = async (data) => {
     if (existingSchedule) {
       throw new CustomError("Schedule already exists", 400);
     }
+
+  const  schedule = {
+      scheduleId:  data.scheduleId,
+      seatPrice: data.seatPrice,
+      startTime: new Date(data.startTime),
+      endTime: new Date(data.endTime),
+      routeId: data.routeId, 
+      busId: data.busId
+    }; 
   
 
-  await Schedule.create({scheduleId: data.scheduleId, seatPrice: data.seatPrice, startTime: new Date(data.startTime),
-    endTime: new Date(data.endTime), routeId: data.routeId, busId: data.busId});
+  await Schedule.create(schedule);
     
     return {statusCode: 201};
   } catch (error) {
@@ -46,6 +53,7 @@ const getScheduleById = async (data) => {
       _id: schedule._id,
       scheduleId: schedule.scheduleId,
       seatPrice: schedule.seatPrice,
+      bookedSeats: schedule.bookedSeats,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       route: routeData,
@@ -117,6 +125,7 @@ const getSchedules = async () => {
                   _id: schedule._id,
                   scheduleId: schedule.scheduleId,
                   seatPrice: schedule.seatPrice,
+                  bookedSeats: schedule.bookedSeats,
                   startTime: schedule.startTime,
                   endTime: schedule.endTime,
                   route: routeData,

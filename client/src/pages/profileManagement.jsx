@@ -3,7 +3,7 @@ import '../styles/profilemanagement.css';
 import Sidebar from '../components/Sidebar';
 
 const exampleUsers = [
-  { id: 'B0001', name: 'Niwarthana', email: 'sathyanjali00@gmail.com', role: 'Commuter' },
+  { id: 'B0001', name: 'testName', email: 'test@gmail.com', role: 'Commuter' },
 ];
 
 function ProfileManagement() {
