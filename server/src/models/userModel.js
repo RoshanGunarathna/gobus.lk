@@ -9,6 +9,9 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ["admin", "operator", "commuter"], default: "commuter" }
 });
 
+UserSchema.index({ role: 1 }); // Role index for quick filtering
+
+
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
