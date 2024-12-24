@@ -11,5 +11,9 @@ const bookingSchema = new mongoose.Schema({
 });
 
 
+bookingSchema.index({ bookingId: 1 }, { unique: true }); // Ensure unique booking IDs
+bookingSchema.index({ scheduleId: 1, addedDate: -1 }); // Optimize queries by schedule and date
+
+
 
 module.exports = mongoose.model('Booking', bookingSchema);
