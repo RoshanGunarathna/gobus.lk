@@ -6,8 +6,8 @@ const { getRoute, updateRoute, getAllRoutes, deleteRoute, addRoute} = require('.
 const router = express.Router();
 
 router.post("/addRoute", protect(["admin", "operator"]),addRoute);
-router.get("/getAllRoutes", protect(["admin", "operator"]),getAllRoutes);
-router.get("/getRoute", protect(["admin", "operator"]),getRoute);
+router.get("/getAllRoutes", protect(["commuter", "admin", "operator"]),getAllRoutes);
+router.get("/getRoute", protect(["commuter", "admin", "operator"]),getRoute);
 router.post("/updateRoute", protect(["admin", "operator"]),updateRoute);
 router.post("/deleteRoute", protect(["admin", "operator"]),deleteRoute);
 

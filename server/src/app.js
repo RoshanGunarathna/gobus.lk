@@ -6,6 +6,7 @@ const busManagementRoutes = require('./routes/busManagementRoutes');
 const routeManagementRoutes = require('./routes/routeManagementRoutes');
 const scheduleManagementRoutes = require('./routes/scheduleManagementRoutes');
 const bookingManagementRoutes = require('./routes/bookingManagementRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 const userRoutes = require('./routes/userRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const rateLimit = require('express-rate-limit');
@@ -71,6 +72,7 @@ app.use('/api/busManagement', busManagementRoutes);
 app.use('/api/routeManagement', routeManagementRoutes);
 app.use('/api/scheduleManagement', scheduleManagementRoutes);
 app.use('/api/bookingManagement', bookingManagementRoutes);
+app.use('/api/booking', bookingRoutes);
 
 // Error handling middleware (custom middleware for handling errors globally)
 app.use(errorMiddleware);
