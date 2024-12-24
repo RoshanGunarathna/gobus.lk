@@ -253,11 +253,25 @@ const getBookings = async () => {
   }
 };
 
+
+const getCommuters = async () => {
+  try {
+    const commuterList = await User.find({ role: { $in: 'commuter'} }).select('-__v -password');
+  
+    return commuterList;
+  } catch (error) {
+
+    throw error;
+  }
+}
+
+
+//Private Functions
+
 const getCommuter = async (uid) => {
   const commuter = await User.findById(uid).select('-__v -password');
   return commuter;
 }
-
 
 
 const getScheduleById = async (data) => {
@@ -309,6 +323,9 @@ const getBusById = async (data) => {
 };
 
 
+
+
+
 const isPassingUserIsCommuter = async (uid) => {
   const user = await  getCommuter(uid);
 
@@ -331,6 +348,7 @@ module.exports = {
   updateBookingById,
   deleteBookingById,
   getBookings,
-  addABooking
+  addABooking,
+  getCommuters
 };
 

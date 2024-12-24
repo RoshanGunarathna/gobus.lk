@@ -1,4 +1,4 @@
-const { getBookingById, updateBookingById , getBookings, deleteBookingById, addABooking} = require('../services/bookingManagementService');
+const { getBookingById, getCommuters, updateBookingById , getBookings, deleteBookingById, addABooking} = require('../services/bookingManagementService');
 
 const { handleResponse } = require('../utils/responseHandler');
 
@@ -67,6 +67,16 @@ const deleteBooking = async (req, res, next) => {
   }
 }
 
+const getAllCommuters = async (req, res, next) => {
+  
+  try {
+    const commuters = await getCommuters();
+    handleResponse(res, 200, 'Commuters are retrieved successfully', {commuters: commuters});
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 
 module.exports = {
@@ -74,5 +84,6 @@ module.exports = {
   updateBooking,
   getAllBookings,
   deleteBooking,
-  addBooking
+  addBooking,
+  getAllCommuters
 };
