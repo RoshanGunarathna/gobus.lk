@@ -33,7 +33,7 @@ const updateSchedule = async (req, res, next) => {
 
   try {
 
-    const schedule = await updateScheduleById({user:req.user, body: req.body});
+    const schedule = await updateScheduleById(req.body);
     handleResponse(res, 200, 'Schedule Update successfully', {schedule:schedule});
   } catch (err) {
     next(err);

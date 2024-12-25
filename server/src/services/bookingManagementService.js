@@ -7,6 +7,8 @@ const { Bus } = require('../models');
 const { Route } = require('../models');
 
 
+
+
 const isBookingExist = async (bookingId) => {
   return await Booking.findOne({ bookingId }).select('-__v');
 };
@@ -24,7 +26,10 @@ const addABooking = async (data) => {
 
     const schedule = await Schedule.findById(data.scheduleId).select('-__v');
 
-    const busData = await getBusById({id: schedule.busId});
+    var busData;
+    if(schedule){
+      busData = await getBusById({id: schedule.busId});
+    }
 
      
     if (!schedule || !busData) {
@@ -43,6 +48,7 @@ const addABooking = async (data) => {
 
 
     const booking = {
+      addedDate: new Date(),
       bookingId: data.bookingId,
       seats: data.seats,
       paySlipNumber: data.paySlipNumber,
@@ -110,7 +116,12 @@ const updateBookingById = async (data) => {
 
     const schedule = await Schedule.findById(data.scheduleId).select('-__v');
 
-    const busData = await getBusById({id: schedule.busId});
+    var busData;
+    if(schedule){
+      busData = await getBusById({id: schedule.busId});
+    }
+
+  
 
      
     if (!schedule || !busData) {
@@ -125,9 +136,19 @@ const updateBookingById = async (data) => {
     }
 
 
+    const booking = {
+      id: data.id,
+      bookingId: data.bookingId,
+      seats: data.seats,
+      paySlipNumber: data.paySlipNumber,
+      scheduleId: data.scheduleId,
+      commuterId: data.commuterId
+    }
+
+
 
    
-    const updatedBooking = await Booking.findByIdAndUpdate(data.id, data, {
+    const updatedBooking = await Booking.findByIdAndUpdate(data.id, booking, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validators on the update
     }).select('-__v');
@@ -139,7 +160,7 @@ const updateBookingById = async (data) => {
     });
 
     if (!updatedBooking) {
-      throw new CustomError("Booking not found", 404);
+      throw new CustomError("Booking not found!", 404);
     }
     return updatedBooking;
   } catch (error) {
@@ -156,7 +177,7 @@ const deleteBookingById = async (id) => {
 
 
     if (!booking) {
-      return null;
+      throw new CustomError("Booking not found!", 404);
     }
 
     const schedule = await Schedule.findById(booking.scheduleId).select('-__v');
@@ -175,7 +196,7 @@ const deleteBookingById = async (id) => {
 
     const existingBooking = await Booking.findById(id);
     if (!existingBooking) {
-      throw new CustomError("Booking not found", 404);
+      throw new CustomError("Booking not found!", 404);
     }
 
     await Booking.findByIdAndDelete(id).select('-__v');
@@ -232,11 +253,25 @@ const getBookings = async () => {
   }
 };
 
+
+const getCommuters = async () => {
+  try {
+    const commuterList = await User.find({ role: { $in: 'commuter'} }).select('-__v -password');
+  
+    return commuterList;
+  } catch (error) {
+
+    throw error;
+  }
+}
+
+
+//Private Functions
+
 const getCommuter = async (uid) => {
   const commuter = await User.findById(uid).select('-__v -password');
   return commuter;
 }
-
 
 
 const getScheduleById = async (data) => {
@@ -288,6 +323,9 @@ const getBusById = async (data) => {
 };
 
 
+
+
+
 const isPassingUserIsCommuter = async (uid) => {
   const user = await  getCommuter(uid);
 
@@ -310,6 +348,7 @@ module.exports = {
   updateBookingById,
   deleteBookingById,
   getBookings,
-  addABooking
+  addABooking,
+  getCommuters
 };
 

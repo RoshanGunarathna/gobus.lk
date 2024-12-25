@@ -6,8 +6,8 @@ const { getSchedule, updateSchedule, getAllSchedules, deleteSchedule, addSchedul
 const router = express.Router();
 
 router.post("/addSchedule", protect(["admin", "operator"]),addSchedule);
-router.get("/getAllSchedules", protect(["admin", "operator"]),getAllSchedules);
-router.get("/getSchedule", protect(["admin", "operator"]),getSchedule);
+router.get("/getAllSchedules", protect(["commuter", "admin", "operator"]),getAllSchedules);
+router.get("/getSchedule", protect(["commuter", "admin", "operator"]),getSchedule);
 router.post("/updateSchedule", protect(["admin", "operator"]),updateSchedule);
 router.post("/deleteSchedule", protect(["admin", "operator"]),deleteSchedule);
 
