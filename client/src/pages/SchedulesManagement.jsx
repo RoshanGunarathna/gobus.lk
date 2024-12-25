@@ -45,6 +45,8 @@ function SchedulesManagement() {
                 busNumber: schedule.bus?.number || 'N/A',
                 seatPrice: schedule.seatPrice || 'N/A',
                 seats: schedule.bus?.seat || 'N/A',
+                bookedSeats: schedule.bookedSeats, 
+
               };
             });
 
@@ -273,7 +275,7 @@ function SchedulesManagement() {
                   <td>{schedule.routeName}</td>
                   <td>{schedule.busNumber}</td>
                   <td>{schedule.seatPrice}</td>
-                  <td>{schedule.seats}</td>
+                  <td> {schedule.seats} ({schedule.seats - schedule.bookedSeats})</td>
                   <td>
                     <button className="edit-btn" onClick={() => handleEditClick(schedule)}>
                       Edit
