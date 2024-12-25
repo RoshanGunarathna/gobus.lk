@@ -1,0 +1,17 @@
+/* Dashboard content styles */
+.dashboard-content {
+    flex-grow: 1; /* Takes up remaining space */
+    padding: 20px;
+    background-color: #f4f4f4; /* Light background for content */
+  }
+  
+  .logoutButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
