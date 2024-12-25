@@ -131,8 +131,12 @@ function SchedulesManagement() {
         try {
           const response = await getASchedule(schedule._id);
           const scheduleData = response.schedule;
+
+         
       
-          if (scheduleData) { let formattedStart = ''; let formattedEnd = '';
+          if (scheduleData) { 
+            let formattedStart = ''; 
+            let formattedEnd = '';
       
             if (scheduleData.startTime) {
               const startDate = new Date(scheduleData.startTime);
@@ -142,30 +146,40 @@ function SchedulesManagement() {
             if (scheduleData.endTime) { const endDate = new Date(scheduleData.endTime);
               if (!isNaN(endDate)) { formattedEnd = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000) .toISOString() .slice(0, 16); }
             }
+
+
       
             const [routesResponse, busesResponse] = await Promise.all([ getAllRoutes(), getAllBuses() ]);
-            const routes = routesResponse?.data?.routes || [];
-            const buses = busesResponse || [];
-
-            const selectedBus = buses.find(bus => bus.number === scheduleData.busNumber);
+            const routeList = routesResponse?.data?.routes;
             
+
+            const routes = routeList || [];
+            const buses = busesResponse || [];
+            console.log("scheduleData data", scheduleData);
+            console.log("bus data", buses[0]);
+            console.log("route data", routes[0]);
+
+           
             setSelectedSchedule({ 
-              _id: scheduleData.
-              _id,scheduleId: scheduleData.scheduleId, 
-              routeID: scheduleData.routeID, 
-              routeName: scheduleData.routeName, 
-              busNumber: scheduleData.busNumber,
-              seats: selectedBus ? selectedBus.seat : 0,
+              _id: scheduleData._id,
+              scheduleId: scheduleData.scheduleId, 
+              routeID: scheduleData.route.routeId, 
+              routeName: scheduleData.route.routeName, 
+              busNumber: scheduleData.bus.number,
+              seats: scheduleData.bus.seat ?? 0,
               seatPrice: scheduleData.seatPrice,
               start: formattedStart,
               end: formattedEnd,
-              bookedSeats: scheduleData.bookedSeats || 0 });
+              bookedSeats: scheduleData.bookedSeats || 0
+            });
+
+              
       
             setRoutes(routes);
             setBuses(buses);
             setIsModalOpen(true);
       
-            console.log('Selected Bus Seats:', selectedBus ? selectedBus.seat : 'No seat data');
+           
           }
         } catch (error) {
           console.error('Error loading schedule:', error);
@@ -274,7 +288,10 @@ function SchedulesManagement() {
                   <td>{schedule.routeName}</td>
                   <td>{schedule.busNumber}</td>
                   <td>{schedule.seatPrice}</td>
-                  <td> {schedule.seats} ({schedule.seats - schedule.bookedSeats})</td>
+                  <td> {schedule.seats} 
+                   
+                    (<span style={{ color: 'green' }}> {schedule.seats - schedule.bookedSeats}</span>)
+                    </td>
                   <td>
                     <button className="edit-btn" onClick={() => handleEditClick(schedule)}>
                       Edit
