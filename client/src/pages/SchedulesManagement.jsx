@@ -1,4 +1,3 @@
-
 import '../styles/SchedulesManagement.css';
 import Sidebar from '../components/Sidebar';
 import { getAllSchedule, getASchedule, updateSchedule, addSchedule, deleteShedule } from '../api/scheduleApi';
