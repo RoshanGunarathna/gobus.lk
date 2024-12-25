@@ -23,14 +23,11 @@ function RoutesManagement() {
     setIsLoading(true);
     try {
       const response = await getAllRoutes();
-      // Let's log the response to see its structure
      
       
-      // Check if response.data exists and handle accordingly
       if (response?.data?.routes) {
         setRoutes(response.data.routes);
       } else if (response?.data) {
-        // If the data is directly in response.data
         setRoutes(response.data);
       } else {
         showToastMessage('Invalid data format received');
@@ -44,13 +41,10 @@ function RoutesManagement() {
   };
 
  const handleEditClick = async (route) => {
-  // Add this console log
  
 
   try {
-    const response = await getRouteById(route._id);
-    // Add this to see what comes from the API
-    
+    const response = await getRouteById(route._id);    
     
     if (response?.data?.route) {
       setCurrentRoute(response.data.route);
@@ -148,6 +142,10 @@ function RoutesManagement() {
     }
   };
 
+
+
+
+  
   const showToastMessage = (message) => {
     setToastMessage(message);
     setShowToast(true);
