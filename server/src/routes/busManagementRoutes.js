@@ -6,8 +6,8 @@ const { getBus, updateBus, getAllBuses, deleteBus, addBus} = require('../control
 const router = express.Router();
 
 router.post("/addBus", protect(["admin", "operator"]),addBus);
-router.get("/getAllBuses", protect(["admin", "operator"]),getAllBuses);
-router.get("/getBus", protect(["admin", "operator"]),getBus);
+router.get("/getAllBuses", protect(["commuter","admin", "operator"]),getAllBuses);
+router.get("/getBus", protect(["commuter","admin", "operator"]),getBus);
 router.post("/updateBus", protect(["admin", "operator"]),updateBus);
 router.post("/deleteBus", protect(["admin", "operator"]),deleteBus);
 

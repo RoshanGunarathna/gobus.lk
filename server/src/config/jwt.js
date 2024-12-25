@@ -3,9 +3,10 @@ require('dotenv').config();
 const jwtConfig = {
     accessTokenSecret: process.env.JWT_SECRET,
     refreshTokenSecret: process.env.JWT_REFRESH_SECRET,
-    accessTokenExpiry: '15m', 
+    //accessTokenExpiry: '15m', 
     refreshTokenExpiry: '7d',
-    // accessTokenExpiry: '3s', 
+    accessTokenExpiry: '1d', 
+    // accessTokenExpiry: '2s', 
     // refreshTokenExpiry: '7d',
     refreshTokenExpiryAsDateInt: 7,
 };

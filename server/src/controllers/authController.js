@@ -36,10 +36,10 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (refreshToken) {
-    revokeRefreshToken(refreshToken);
+   await  revokeRefreshToken({oldRefreshToken: refreshToken});
     res.clearCookie('refreshToken');
   }
   res.json({ message: 'Logged out successfully' });
