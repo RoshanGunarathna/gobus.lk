@@ -16,7 +16,6 @@ export const getAllUsers = async () => {
 export const getAUser = async (uid) => {
   try {
     
-    
     const response = await axiosInstance.get(`userManagement/getUser`, {
       params: { uid }, // Pass uid as a query parameter
     });
