@@ -5,6 +5,7 @@ const CustomError = require('../utils/customError');
 const { Schedule } = require('../models');
 const { Bus } = require('../models');
 const { Route } = require('../models');
+const { generateSmallId } = require('../utils/smallIdGenerator');
 
 
 
@@ -46,10 +47,12 @@ const addABooking = async (data) => {
       throw new CustomError("Booking failed: Not enough available seats. Try booking fewer seats.", 400);
     }
 
+    const bookingId = await generateUniqueBookingId();
+
 
     const booking = {
       addedDate: new Date(),
-      bookingId: data.bookingId,
+      bookingId: bookingId,
       seats: data.seats,
       paySlipNumber: data.paySlipNumber,
       scheduleId: data.scheduleId,
@@ -342,6 +345,22 @@ const isPassingUserIsCommuter = async (uid) => {
  
  return true;
  }
+
+ const generateUniqueBookingId = async () => {
+  let bookingId;
+  let isUnique = false;
+
+  while (!isUnique) {
+    bookingId = generateSmallId("BK"); 
+    const existingBooking = await isBookingExist(bookingId); 
+
+    if (!existingBooking) {
+      isUnique = true; 
+    }
+  }
+
+  return bookingId;
+};
 
 module.exports = {
   getBookingById,

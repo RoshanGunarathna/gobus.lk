@@ -1,3 +1,4 @@
+
 import '../styles/SchedulesManagement.css';
 import Sidebar from '../components/Sidebar';
 import { getAllSchedule, getASchedule, updateSchedule, addSchedule, deleteShedule } from '../api/scheduleApi';
@@ -44,8 +45,6 @@ function SchedulesManagement() {
                 busNumber: schedule.bus?.number || 'N/A',
                 seatPrice: schedule.seatPrice || 'N/A',
                 seats: schedule.bus?.seat || 'N/A',
-                bookedSeats: schedule.bookedSeats, 
-
               };
             });
 
@@ -288,6 +287,7 @@ function SchedulesManagement() {
                   <td>{schedule.routeName}</td>
                   <td>{schedule.busNumber}</td>
                   <td>{schedule.seatPrice}</td>
+
                   <td> {schedule.seats} 
                    
                     (<span style={{ color: 'green' }}> {schedule.seats - schedule.bookedSeats}</span>)
