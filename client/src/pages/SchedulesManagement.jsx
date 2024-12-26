@@ -45,6 +45,7 @@ function SchedulesManagement() {
                 busNumber: schedule.bus?.number || 'N/A',
                 seatPrice: schedule.seatPrice || 'N/A',
                 seats: schedule.bus?.seat || 'N/A',
+                bookedSeats: schedule.bookedSeats,
               };
             });
 
