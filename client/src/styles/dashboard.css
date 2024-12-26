@@ -1,17 +1,33 @@
 /* Dashboard content styles */
-.dashboard-content {
-    flex-grow: 1; /* Takes up remaining space */
-    padding: 20px;
-    background-color: #f4f4f4; /* Light background for content */
+.dashboard {
+    display: flex; 
+   
+    background-color: #f4f4f4; 
+    width: 1509px;
+    height: 100vh; /* Full viewport height */
+
+    .dashBoardContainer{
+      flex: 6;
+
+      .maintitles{
+        padding: 50px 60px 20px 20px;
+        font-weight: bold;
+        font-size: 20px;
+        color: black;
+        
+     }
+
+      .widgets, .charts{
+        display: flex;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      
+    }
+
+
   }
   
-  .logoutButton {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ff4d4d;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+  
+  
