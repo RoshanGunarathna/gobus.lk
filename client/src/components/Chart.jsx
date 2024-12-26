@@ -4,9 +4,32 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import React from 'react'
 
 
-const Chart = ({valueData}) => {
+const Chart = ({type, valueData}) => {
 
   console.log(valueData);
+  console.log(type);
+
+  let data;
+
+  switch (type) {
+      case "revenue":
+          data={
+            dataKey:"revenue",
+             
+          }
+          break;
+          case "booking":
+          data={
+            dataKey:"bookings",
+             
+          }
+          break;
+         
+      default:
+          break;
+  }
+
+
   return (
     <div className='chart'>
       
@@ -26,7 +49,7 @@ const Chart = ({valueData}) => {
       <XAxis dataKey="date" />
       <YAxis />
       <Tooltip />
-      <Area type="monotone" dataKey="revenue" stroke="#8884d8" fill="#8884d8" />
+      <Area type="monotone" dataKey={data.dataKey} stroke="#8884d8" fill="#8884d8" />
     </AreaChart>
   </ResponsiveContainer></div>
   )

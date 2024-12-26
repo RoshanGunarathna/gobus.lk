@@ -3,6 +3,7 @@ import '../styles/widget.css';
  import ShowChartIcon from '@mui/icons-material/ShowChart';
  import GroupIcon from '@mui/icons-material/Group';
  import ForkRightIcon from '@mui/icons-material/ForkRight';
+ import ChairIcon from '@mui/icons-material/Chair';
 
 
 
@@ -38,10 +39,17 @@ const Widget = ({type, valueData}) => {
                     icon: (<ForkRightIcon className='icon' />)
                 }
                 break;
-    
+                case "availableSeats":
+                    data={
+                        title:"Total Available Seats",
+                        icon: (<ChairIcon className='icon' />)
+                    }
+                    break;
         default:
             break;
     }
+
+    
   return (
     <div className='widget'>
         <div className='left'>
