@@ -6,8 +6,8 @@ const addRoute = async (req, res, next) => {
   
   try {
  
-   const {routeId, name} = req.body;
-    const data = await addARoute(routeId, name);
+   const {name} = req.body;
+    const data = await addARoute(name);
 
     handleResponse(res, data.statusCode, 'Route added successfully', null);
   } catch (err) {

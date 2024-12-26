@@ -16,11 +16,11 @@ const isBookingExist = async (bookingId) => {
 
 const addABooking = async (data) => {
   try {
-    const existingBooking = await isBookingExist(data.bookingId);
 
-    if (existingBooking) {
-      throw new CustomError("Booking already exists", 400);
+    if (!data.seats || data.seats<= 0) {
+      throw new CustomError("Booking failed: Add at lease one seat", 404);
     }
+   
 
    await isPassingUserIsCommuter(data.commuterId);
 
@@ -61,7 +61,7 @@ const addABooking = async (data) => {
 
     await Booking.create(booking);
 
-    await Schedule.findByIdAndUpdate(data.scheduleId, {bookedSeats : newBookedSeats}, {
+    await Schedule.findByIdAndUpdate(schedule._id, {bookedSeats : newBookedSeats}, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validators on the update
     });
@@ -95,6 +95,7 @@ const getBookingById = async (data) => {
 
     booking = {
       _id: booking._id,
+      addedDate: booking.addedDate,
       bookingId: booking.bookingId,
       seats: booking.seats,
       paySlipNumber: booking.paySlipNumber,
@@ -114,6 +115,17 @@ const getBookingById = async (data) => {
 const updateBookingById = async (data) => {
   try {
 
+    const oldBooking = await Booking.findById(data.id).select('-__v');
+
+
+    if (!oldBooking) {
+      throw new CustomError("Booking not found", 404);
+    }
+
+    if (!data.seats || data.seats<= 0) {
+      throw new CustomError("Booking failed: Add at lease one seat", 404);
+    }
+
 
     await isPassingUserIsCommuter(data.commuterId);
 
@@ -131,8 +143,8 @@ const updateBookingById = async (data) => {
       throw new CustomError("Booking failed: Schedule or bus data not found.", 404);
     }
     
-    
-    const newBookedSeats = schedule.bookedSeats + data.seats;
+     
+    const newBookedSeats = (schedule.bookedSeats - oldBooking.seats) + data.seats;
     
     if (busData.seat < newBookedSeats) {
       throw new CustomError("Booking failed: Not enough available seats. Try booking fewer seats.", 400);
@@ -140,8 +152,6 @@ const updateBookingById = async (data) => {
 
 
     const booking = {
-      id: data.id,
-      bookingId: data.bookingId,
       seats: data.seats,
       paySlipNumber: data.paySlipNumber,
       scheduleId: data.scheduleId,
@@ -231,6 +241,7 @@ const getBookings = async () => {
               bookingId: booking.bookingId,
               seats: booking.seats,
               paySlipNumber: booking.paySlipNumber,
+              addedDate: booking.addedDate,
               scheduleData: scheduleData,
               commuterData: commuterData,
             };
