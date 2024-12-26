@@ -45,7 +45,7 @@ function SchedulesManagement() {
                 busNumber: schedule.bus?.number || 'N/A',
                 seatPrice: schedule.seatPrice || 'N/A',
                 seats: schedule.bus?.seat || 'N/A',
-                bookedSeats: schedule.bookedSeats,
+                availableSeats: (schedule.bus?.seat - schedule.bookedSeats) || schedule.bus?.seat,
               };
             });
 
@@ -291,7 +291,7 @@ function SchedulesManagement() {
 
                   <td> {schedule.seats} 
                    
-                    (<span style={{ color: 'green' }}> {schedule.seats - schedule.bookedSeats}</span>)
+                    (<span style={{ color: 'green' }}>{schedule.availableSeats}</span>)
                     </td>
                   <td>
                     <button className="edit-btn" onClick={() => handleEditClick(schedule)}>
