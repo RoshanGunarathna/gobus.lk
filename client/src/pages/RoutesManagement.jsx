@@ -112,9 +112,6 @@ function RoutesManagement() {
 
   const validateForm = () => {
     const errors = {};
-    if (!currentRoute.routeId?.trim()) {
-      errors.routeId = 'Route ID is required.';
-    }
     if (!currentRoute.name?.trim()) {
       errors.name = 'Route Name is required.';
     }
@@ -164,7 +161,7 @@ function RoutesManagement() {
           <table className="routes-table">
             <thead>
               <tr>
-                <th>Route ID</th>
+              <th>Route ID</th>
                 <th>Route Name</th>
                 <th>Action</th>
               </tr>
@@ -181,7 +178,7 @@ function RoutesManagement() {
               ) : (
                 routes.map((route) => (
                   <tr key={route._id}>
-                    <td>{route.routeId}</td>
+                   <td>{route.routeId}</td>
                     <td>{route.name}</td>
                     <td>
                       <button
@@ -208,16 +205,7 @@ function RoutesManagement() {
             <div className="modal-overlay">
               <div className="modal-content">
                 <h2>Edit Bus Routes Details</h2>
-                <label>
-                  Route ID
-                  <input
-                    type="text"
-                    name="routeId"
-                    value={currentRoute.routeId || ''}
-                    onChange={handleInputChange}
-                    disabled
-                  />
-                </label>
+               
                 <label>
                   Route Name
                   <input
@@ -247,19 +235,7 @@ function RoutesManagement() {
             <div className="modal-overlay">
               <div className="modal-content">
                 <h2>Add New Route</h2>
-                <label>
-                  Route ID
-                  <input
-                    type="text"
-                    name="routeId"
-                    value={currentRoute.routeId}
-                    onChange={handleInputChange}
-                    placeholder="Enter route ID"
-                  />
-                  {formErrors.routeId && (
-                    <span className="error">{formErrors.routeId}</span>
-                  )}
-                </label>
+               
                 <label>
                   Route Name
                   <input

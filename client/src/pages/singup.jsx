@@ -56,7 +56,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="container">
+    <div className="container-login">
       <div className="left-section">
         <img src="https://i.imgur.com/ceOWZEe.png" alt="Side Image" className="side-image" />
       </div>

@@ -133,7 +133,7 @@ function BusManagement() {
             <thead>
               <tr>
                 <th>Bus Number</th>
-                <th>Name</th>
+                <th>Driver name</th>
                 <th>Seat</th>
                 <th>Action</th>
               </tr>
@@ -176,7 +176,7 @@ function BusManagement() {
                 {formErrors.number && <span className="bus-error-unique">{formErrors.number}</span>}
               </label>
               <label>
-                Name:
+                Driver Name:
                 <input
                   type="text"
                   value={newBus.name}
@@ -215,7 +215,7 @@ function BusManagement() {
                 />
               </label>
               <label>
-                Name:
+                Driver Name:
                 <input
                   type="text"
                   value={modalData.name}

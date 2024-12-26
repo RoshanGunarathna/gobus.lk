@@ -78,6 +78,7 @@ const BookingList = () => {
       const fetchAllBookings = async () => {
         try {
           const bookingsResponse = await getAllBooking();
+          console.log("bookingsResponse",bookingsResponse);
           setBookings(bookingsResponse.bookings);
           
         } catch (err) {
@@ -557,7 +558,7 @@ const BookingList = () => {
                   <td>{booking.bookingId}</td>
                   <td>{booking.scheduleData.scheduleId}</td>
                   <td>{booking.commuterData.name}</td>
-                  <td>{booking.addedDate ? new Date(booking.addedDate).toISOString().split("T")[0] : "Not Available"}</td>
+                  <td>{booking.addedDate}</td>
                   <td>{booking.scheduleData.route.name}</td>
                   <td>{booking.seats}</td>
                   <td>{booking.paySlipNumber}</td>
@@ -622,26 +623,19 @@ const BookingList = () => {
                     </select>
                   </div>
 
-                  {/* Available Seats */}
-                  <div className="modal-field">
+                  {/* Available Seats */}               
+
+                  <div className="modal-field-row">
+                  <div className="modal-fields">
                     <label>Available Seats</label>
-                    <input
-                      type="text"
-                      value={availableSeats}
-                      readOnly
-                    />
+                    <div className="price-display">{availableSeats || " - "}</div>
                   </div>
 
-                  {/* Price per Seat */}
-                  <div className="modal-field">
-                    <label>Price per Seat</label>
-                    <input
-                      type="text"
-                      value={selectedPrice}
-                      readOnly
-                    />
+                  <div className="modal-fieldp">
+                  <label className="lable">Price</label>
+                  <div className="price-display">{selectedPrice || " - "}</div>
                   </div>
-
+                 </div>
                   {/* Book Seats */}
                   <div className="modal-field">
                     <label>Book Seats</label>
@@ -668,7 +662,7 @@ const BookingList = () => {
 
                 {/* Action Buttons */}
                 <div className="modal-actions">
-                  <button className="modal-update-btn" onClick={updateBooking}>
+                  <button className="modal-update-btn2" onClick={updateBooking}>
                     Update
                   </button>
                   <button className="modal-cancel-btn" onClick={closeModaledit}>
@@ -699,14 +693,17 @@ const BookingList = () => {
                   </select>
                 </div>
 
-                <div className="modal-field">
-                  <label>Available Seat</label>
-                  <input 
-                    type="text" 
-                    placeholder="Available seat" 
-                    value={selectedAvailability} 
-                    disabled 
-                  />
+                <div className="modal-field-row">
+                  <div className="modal-fields">
+                    <label>Available Seat</label>
+                    <div className="price-display">{selectedAvailability || "-"}</div>
+
+                    
+                  </div>
+                  <div className="fieldp">
+                    <label className="lable">Price</label>
+                    <div className="price-display">{selectedPrice || "-"}</div>
+                  </div>
                 </div>
                 <div className="modal-field">
                   <label>Seat</label>
@@ -721,11 +718,7 @@ const BookingList = () => {
                   />
                 </div>
 
-                <div className="modal-field-row">
-                  <div className="fieldp">
-                    <label>Price</label>
-                    <div className="price-display">{selectedPrice || "Not Available"}</div>
-                  </div>
+                
                   <div className="field">
                     <label>Pay Slip Number</label>
                     <input
@@ -736,7 +729,6 @@ const BookingList = () => {
                       placeholder="Enter Pay Slip Number"
                     />
                   </div>
-                </div>
 
                 <div className="modal-actions">
                   <button 
@@ -798,17 +790,17 @@ const BookingList = () => {
                       ))}
                     </select>
                   </div>
-
-                  <div className="modal-field">
+                  <div className="modal-row">
+                  <div className="modal-fieldo">
                     <label>Available Seat</label>
-                    <input
-                      type="text"
-                      placeholder="Available seat"
-                      value={selectedAvailability}
-                      disabled
-                    />
-                  </div>
+                    <div className="price-display">{selectedAvailability || "-"}</div>
 
+                  </div>
+                    <div className="fieldpo">
+                      <label className="lable">Price</label>
+                      <div className="price-display">{selectedPrice || " - "}</div>
+                    </div>
+                  </div>
                   <div className="modal-field">
                   <label>Seat</label>
                   <input 
@@ -821,12 +813,6 @@ const BookingList = () => {
                     max={selectedAvailability}
                   />
                 </div>
-
-                  <div className="modal-row">
-                    <div className="modal-field">
-                      <label>Price</label>
-                      <div className="price-display">{selectedPrice || "Not Available"}</div>
-                    </div>
                     <div className="modal-field">
                       <label>Pay Slip Number</label>
                       <input
@@ -837,8 +823,6 @@ const BookingList = () => {
                         placeholder="Enter Pay Slip Number"
                       />
                     </div>
-                  </div>
-
                   <div className="modal-actions">
                   <button 
                       type="submit"  
