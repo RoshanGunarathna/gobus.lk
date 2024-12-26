@@ -66,17 +66,18 @@
   }
   
   .table-containerb {
-    width: 90%;
+    width: 93%;
     margin-right: 140px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     padding: 20px;
-    margin-left: 83px;
+    margin-left: 36px;
     color: black;
     margin-top: 100px;
     height: auto;
+    font-size: 14px;
     }
   
   .booking-table {
@@ -111,6 +112,7 @@
     border-radius: 8px;
     width: 470px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: rgb(65, 64, 64);
   }
   
   .modal-field {
@@ -292,4 +294,36 @@
     opacity: 1;
   }
 }
-  
+
+.modal-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Space between the fields */
+}
+
+.modal-field {
+  flex: 1; /* Allow the fields to share the available space equally */
+}
+
+.price-display {
+  font-size: 16px;
+  color: #333;
+  margin-top: 5px;
+}
+
+.modal-field-row {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Fields eke thiyan gap set karanne */
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldp {
+  display: flex;
+  flex-direction: column;
+  margin-right: 231px;
+}

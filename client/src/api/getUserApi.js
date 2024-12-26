@@ -10,6 +10,7 @@ export const fetchUserApi = async () => {
   }
 };
 
+
 export const updateUserApi = async (userData) => {
   try {
     const response = await axiosInstance.post('user/updateUser', userData);
@@ -18,6 +19,8 @@ export const updateUserApi = async (userData) => {
     throw error.response?.data?.message || 'Failed to update user';
   }
 };
+
+
 
 export const deleteUserApi = async () => {
   try {
