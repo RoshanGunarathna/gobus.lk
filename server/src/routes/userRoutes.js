@@ -1,15 +1,12 @@
 const express = require('express');
-const { getUser, updateUser} = require('../controllers/userController');
-// const authMiddleware = require('../middlewares/authMiddleware');
+const { getUser, updateUser, deleteUser} = require('../controllers/userController');
+ const {protect} = require('../middlewares/authMiddleware');
 
 
 const router = express.Router();
 
-// router.get('/getUser', authMiddleware, getUser);
-// router.post('/updateUser', authMiddleware, updateUser);
-// Example protected route
-// router.get("/adminDashboard", protect(["admin"]), (req, res) => {
-//     res.json({ message: `Welcome, ${req.user.name}` });
-// });
+router.get("/getUser", protect(["commuter", "admin", "operator"]),getUser);
+router.post("/updateUser", protect(["commuter", "admin", "operator"]),updateUser);
+router.post("/deleteUser", protect(["commuter", "admin", "operator"]),deleteUser);
 
 module.exports = router;

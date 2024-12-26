@@ -1,7 +1,4 @@
-.bus-management-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
+
   
   .bus-table {
     width: 100%;
@@ -281,4 +278,44 @@
   background: #e64444;
   border-radius: 4px;
 }
+
+
+
+.table-containerbu{
+  width: 68%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 20px;
+  margin-left: 83px !important;
+  color: black;
+  margin-top: 100px;
+  height: auto;
+  overflow-y: auto;
+
+}
+
+
+
+.bus-toast-unique {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-weight: bold;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
 

@@ -1,45 +1,101 @@
 // src/pages/Dashboard.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { removeUser } from '../redux/userSlice';
 import Sidebar from '../components/Sidebar';
+import Widget from '../components/Widget';
+
+import '../styles/dashboard.css';
+import Chart from '../components/Chart';
+import { useState, useEffect } from 'react';
+
+
+import { getAdminDashboardData, getOperatorDashboardData } from '../api/dashboardApi';
+
+import { useSelector } from "react-redux";
+
+
+
+
+
 
 function Dashboard() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    // Dispatch logout action
-    dispatch(removeUser());
-    // Redirect to login
-    navigate('/login'); 
-  };
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [dashboardData, setDashboardData] = useState(null);
+
+    const isAdmin = useSelector((state) => {
+      return state.user.user;
+    }).role === "admin";
+
+
+    useEffect(() => {
+      fetchDashBoardData(isAdmin);
+    }, []);
+  
+    const fetchDashBoardData = async (isAdmin) => {
+      try {
+        setLoading(true);
+     var data;
+      if(isAdmin){
+         data = await getAdminDashboardData();
+      } else{
+        data = await getOperatorDashboardData();
+
+        console.log("Operator data", data);
+      }
+       
+        setDashboardData(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        showToast(`${err.message}`);
+      }
+    };
+
+    const showToast = (message, type) => {
+      setToast({ show: true, message, type });
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: '' });
+      }, 3000);
+    };
+
+  
   
 
   return (
-    <div>
+    <div className="dashboard">
       <Sidebar />
-      <h1>Dashboard</h1>
-      <p>Welcome to the Dashboard!</p>
-      <button onClick={handleLogout} style={styles.logoutButton}>
-        Logout
-      </button>
+      <div className='dashBoardContainer'>
+
+        <div className="widgets">
+       
+        {/* {totalBookings: 0, totalCommuters: 2, totalRoutes: 3, availableSeats: 128, totalBookedSeats: 0} */}
+  
+            <Widget type="booking" valueData={dashboardData?.totalBookings} />
+            {isAdmin ? <Widget type="revenue" valueData={dashboardData?.totalRevenue} /> : <Widget type="availableSeats" valueData={dashboardData?.availableSeats}/>}
+          <Widget type="commuter" valueData={dashboardData?.totalCommuters} />
+          <Widget type="route" valueData={dashboardData?.totalRoutes} />
+    
+        </div>
+        <div className='maintitles'>
+        {isAdmin ?  "Revenue Chart" : "Bookings Chart"}
+                </div>
+        <div className='charts'>
+       
+       
+
+        {isAdmin ? <Chart type="revenue" valueData={dashboardData?.revenueWithDateList}/> :  <Chart type="booking" valueData={dashboardData?.bookingWithDateList}/> }
+
+        
+        </div>
+        
+      </div>
     </div>
+     
   );
 }
 
-const styles = {
-  logoutButton: {
-    marginTop: '20px',
-    padding: '10px 20px',
-    fontSize: '16px',
-    backgroundColor: '#ff4d4d',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-};
 
 export default Dashboard;

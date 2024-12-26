@@ -1,11 +1,14 @@
+.container {
+  display: flex; /* Enables flexbox */
+  height: 100vh; /* Full viewport height */
+  width: 1509px;
+}
+
 .sidebar {
   width: 260px;
-  background-color: #002d72;
+  background-color: #00135D;
   color: white;
-  height: 705px;
   padding: 20px;
-  margin-top: 264px;
-  margin-right: 1219px;
 }
 
 .sidebar h2 {
@@ -41,7 +44,7 @@
 }
 
 .active-link {
-  background-color: #00bfff;
+  background-color: #0552BE;
   color: #002d72;
   font-weight: bold;
 }
@@ -54,36 +57,30 @@
   margin-bottom: -14px;
 }
 
-.img-icon1 {
-  width: 25px;
-  margin-right: 17px;
-  height: 16px;
+.logout-section {
+  margin-top: auto;
+  width: 100%;
 }
 
-.img-icon2 {
-  width: 33px;
-  margin-right: 11px;
-  height: 18px;
-  margin-left: -4px;
+.logout-btn {
+  width: 100%;
+  background-color: #4a0ed854;
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.3s ease;
+  margin-top: 48px;
 }
 
-.img-icon3 {
-  width: 34px;
-  margin-right: 15px;
-  height: 25px;
-  margin-left: -7px;
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
 }
 
-.img-icon4 {
-  width: 34px;
-  margin-right: 17px;
-  height: 22px;
-  margin-left: -7px;
-}
-
-.img-icon5 {
-  width: 29px;
-  margin-right: 17px;
-  height: 19px;
-  margin-left: 0px;
-}
