@@ -3,6 +3,7 @@ const { Schedule } = require('../models');
 const CustomError = require('../utils/customError');
 const { Bus } = require('../models');
 const { Route } = require('../models');
+const { generateSmallId } = require('../utils/smallIdGenerator');
 
 
 
@@ -13,10 +14,6 @@ const isScheduleExist = async (scheduleId) => {
 const addASchedule = async (data) => {
   try {
 
-    const existingSchedule = await isScheduleExist(data.scheduleId);
-    if (existingSchedule) {
-      throw new CustomError("Schedule already exists", 400);
-    }
 
     const routeData = await getRouteById({ id: data.routeId });
     const busData = await getBusById({ id: data.busId });
@@ -25,8 +22,11 @@ const addASchedule = async (data) => {
       throw new CustomError("Shedule adding fail! : Route Data or BusData not found", 400);
     }
 
+    const scheduleId = await generateUniqueScheduleId();
+    
+
     const schedule = {
-      scheduleId: data.scheduleId,
+      scheduleId: scheduleId,
       seatPrice: data.seatPrice,
       startTime: new Date(data.startTime),
       endTime: new Date(data.endTime),
@@ -97,7 +97,6 @@ const updateScheduleById = async (data) => {
 
     const schedule = {
       id: data.id,
-      scheduleId: data.scheduleId,
       seatPrice: data.seatPrice,
       startTime: new Date(data.startTime),
       endTime: new Date(data.endTime),
@@ -200,6 +199,22 @@ const getBusById = async (data) => {
 
   return bus;
 
+};
+
+const generateUniqueScheduleId = async () => {
+  let scheduleId;
+  let isUnique = false;
+
+  while (!isUnique) {
+    scheduleId = generateSmallId("SH"); 
+    const existingBooking = await isScheduleExist(scheduleId); 
+
+    if (!existingBooking) {
+      isUnique = true; 
+    }
+  }
+
+  return scheduleId;
 };
 
 

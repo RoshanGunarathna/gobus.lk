@@ -1,21 +1,20 @@
 
 const { Route } = require('../models');
 const CustomError = require('../utils/customError');
+const { generateSmallId } = require('../utils/smallIdGenerator');
 
 
 const isRouteExist = async (routeId) => {
   return await Route.findOne({ routeId }).select('-__v');
 };
 
-const addARoute = async (routeId, name) => {
+const addARoute = async (name) => {
   try {
 
 
-    const existingRoute = await isRouteExist(routeId);
-    if (existingRoute) {
-      throw new CustomError("Route already exists", 400);
-  
-    }
+
+    const routeId = await generateUniqueRouteId();
+
   
 
   await Route.create({routeId,name});
@@ -44,8 +43,13 @@ const getRouteById = async (data) => {
 
 const updateRouteById = async (data) => {
   try {
+
+    const routeData = {
+      id: data.body.id,
+      name: data.body.name
+    }
   
-    const updatedRoute = await Route.findByIdAndUpdate(data.body.id, data.body, {
+    const updatedRoute = await Route.findByIdAndUpdate(data.body.id, routeData, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validators on the update
     }).select('-__v');
@@ -89,6 +93,22 @@ const getRoutes = async () => {
   }
 };
 
+
+ const generateUniqueRouteId = async () => {
+  let routeId;
+  let isUnique = false;
+
+  while (!isUnique) {
+    routeId = generateSmallId("RT"); 
+    const existingBooking = await isRouteExist(routeId); 
+
+    if (!existingBooking) {
+      isUnique = true; 
+    }
+  }
+
+  return routeId;
+};
 
 module.exports = {
   getRouteById,

@@ -6,6 +6,8 @@ const addSchedule = async (req, res, next) => {
   
   try {
  
+
+   
  
     const data = await addASchedule(req.body);
 
@@ -62,6 +64,8 @@ const deleteSchedule = async (req, res, next) => {
     next(err);
   }
 }
+
+
 
 module.exports = {
   getSchedule,
