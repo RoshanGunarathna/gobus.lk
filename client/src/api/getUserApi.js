@@ -1,12 +1,29 @@
+// api/userApi.js
 import axiosInstance from './axiosInstance';
 
 export const fetchUserApi = async () => {
   try {
-    const response = await axiosInstance.get('user/getUser'); 
-    console.log("Logged-in User Data:", response.data); 
-    return response.data; 
+    const response = await axiosInstance.get('user/getUser');
+    return response.data;
   } catch (error) {
-    console.error("Error Fetching User Data:", error.response?.data?.message || 'An error occurred.');
-    throw error.response?.data?.message || 'An error occurred.'; 
+    throw error.response?.data?.message || 'Failed to fetch user data';
+  }
+};
+
+export const updateUserApi = async (userData) => {
+  try {
+    const response = await axiosInstance.post('user/updateUser', userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || 'Failed to update user';
+  }
+};
+
+export const deleteUserApi = async () => {
+  try {
+    const response = await axiosInstance.post('user/deleteUser');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || 'Failed to delete user';
   }
 };
