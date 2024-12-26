@@ -313,20 +313,7 @@ function SchedulesManagement() {
           <div className="modal-content">
             <h2>Edit Schedule Details</h2>
             <form>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Schedule ID</label>
-                  <input 
-                    type="text" 
-                    value={selectedSchedule.scheduleId} 
-                    onChange={(e) => {
-                      if(validateScheduleId(e.target.value)) {
-                        setSelectedSchedule({ ...selectedSchedule, scheduleId: e.target.value })
-                      }
-                    }}
-                  />
-                </div>
-              </div>
+              
               <div className="form-row">
                 <div className="form-group">
                   <label>Start Time</label>
@@ -427,16 +414,7 @@ function SchedulesManagement() {
           <div className="modal-content">
             <h2>Add New Schedule</h2>
             <form>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Schedule ID</label>
-                  <input
-                    type="text"
-                    value={newSchedule.scheduleId}
-                    onChange={(e) => setNewSchedule({ ...newSchedule, scheduleId: e.target.value })}
-                  />
-                </div>
-              </div>
+              
               <div className="form-row">
                 <div className="form-group">
                   <label>Start Time</label>
