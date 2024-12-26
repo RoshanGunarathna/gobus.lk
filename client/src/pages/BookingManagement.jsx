@@ -6,25 +6,25 @@ import  {  useEffect } from 'react';
 import { getUserBookings,addUserBookings, commuterdeletebooking } from '../api/commuterBokkingApi';
 import { getAllRoutes } from '../api/routeApi';
 import { getAllSchedule } from '../api/scheduleApi';
-import { getAllCommuter, addOperatorBookings,operatordeletebooing,getAllBooking, updateBookingAPI,getABooking } from '../api/bookingApi';
+import { getCommuter, addOperatorBookings,operatordeletebooing,getAllBooking, updateBookingAPI,getABooking } from '../api/bookingApi';
 
 const BookingList = () => {
       const [bookings, setBookings] = useState([ ]);
       const [isModalOpen, setIsModalOpen] = useState(false);
       const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-      const [selectedBooking, setSelectedBooking] = useState(
-        {
-          _id: '',
-          bookingId: '',
-          scheduleDbId: '',
-          scheduleId: '',
-          commuterName: '',
-          commuterEmail: '',
-          commuterDbId: '',
-          seats: '',
-          paySlipNumber: '',
-          routeName: '',
-         });
+      const [selectedBooking, setSelectedBooking] = useState({
+        seats: '',
+        paySlipNumber: '',
+        scheduleId: '',
+        commuterId: '',
+        schedule_id: '',
+        booking_id: '',
+        bookingId: '',
+        routeName: '',
+        commuterName: '',
+        seatPrice: 0
+      });
+      
       const [showToast, setShowToast] = useState(false);
       const [deleteDialog, setDeleteDialog] = useState(false);
       const [deleteDialogc, setDeleteDialogc] = useState(false);
@@ -43,6 +43,7 @@ const BookingList = () => {
       const [availableSeats, setAvailableSeats] = useState(0);
       const [scheduleList, setScheduleList] = useState([]);
       const [commuterList, setCommuterList] = useState([]);
+      
       
       useEffect(() => {
         fetchUserData();
@@ -103,8 +104,7 @@ const BookingList = () => {
         }
       };
   
-
-
+ 
       // open add modal for commuter
       const openAddModalcommuter = async () => {
         setIsAddModalOpen(true);
@@ -351,58 +351,48 @@ const BookingList = () => {
           setIsAddModalOpen(false);
         };
 
+
         const openModaledit = async (bookingId) => {
           try {
             const bookingResponse = await getABooking(bookingId);
-
-            const booking =  bookingResponse.booking;
-            const scheduleData =  booking.scheduleData;
-
-            console.log("scheduleData", scheduleData);
-        
-            console.log("booking", booking);
-        
-            const allSchedules = await getAllSchedule();
-  
-            console.log("allSchedules", allSchedules);
-            setScheduleList(allSchedules.schedules);
-
-           
-        
-            const commuterResponse = await getAllCommuter();
-        
-            setCommuterList(commuterResponse.commuters);
-        
-            // const currentSchedule = Array.isArray(scheduleData) && booking?.scheduleData 
-            //   ? scheduleData.find(schedule => schedule.scheduleId === booking.scheduleData.scheduleId) 
-            //   : null;
-        
-            if (scheduleData) {
-              const totalSeats = scheduleData.bus.seat || 0;
-              const bookedSeats = scheduleData.bookedSeats || 0;
-              const availableSeats = totalSeats - bookedSeats;
-        
-              setSelectedPrice(scheduleData.seatPrice || 0);
-              setAvailableSeats(availableSeats + parseInt(booking.seats || 0)); 
-            }
-
+            console.log("Original booking data:", bookingResponse);
             
-        
+            const booking = bookingResponse.data?.booking || bookingResponse.booking || bookingResponse;
+            
+            const response = await getAllSchedule();
+            const scheduleData = response.data || response.schedules || response;
+            setScheduleList(scheduleData);
+            
+            const commuterResponse = await getCommuter();
+            setCommuterList(commuterResponse.data || commuterResponse.commuters || commuterResponse);
+            
+            const currentSchedule = Array.isArray(scheduleData) && booking?.scheduleData 
+              ? scheduleData.find(schedule => schedule.scheduleId === booking.scheduleData.scheduleId) 
+              : null;
+            
+            if (currentSchedule) {
+              const totalSeats = currentSchedule.bus.seat || 0;
+              const bookedSeats = currentSchedule.bookedSeats || 0;
+              const availableSeats = totalSeats - bookedSeats;
+              
+              setSelectedPrice(currentSchedule.seatPrice || 0);
+              setAvailableSeats(availableSeats + parseInt(booking.seats || 0));
+            }
+            
             if (booking) {
               setSelectedBooking({
-                _id: booking._id,
-                bookingId: booking.bookingId,
-                scheduleDbId: scheduleData._id,
-                scheduleId: scheduleData.scheduleId,
-                commuterName: booking.commuterData?.name,
-                commuterEmail: booking.commuterData?.email,
-                commuterDbId: booking.commuterData?._id,
+                bookingId: booking.bookingId || booking._id, 
+                booking_id: booking._id, 
+                scheduleId: booking.scheduleData?.scheduleId || booking.scheduleId,
+                schedule_id: currentSchedule?._id,
+                commuterName: booking.commuterData?.name || booking.commuterName,
+                commuterId: booking.commuterData?._id || booking.commuterId,
                 seats: booking.seats || 0,
                 paySlipNumber: booking.paySlipNumber || "",
-                routeName: scheduleData.route.name,
+                routeName: booking.scheduleData?.route?.name || booking.routeName,
               });
             }
-        
+            
             setIsModalOpen(true);
           } catch (error) {
             console.error("Error loading data:", error);
@@ -410,22 +400,13 @@ const BookingList = () => {
             setShowToast(true);
           }
         };
-        
 
         // edit schedule handdler
         const handleInputChangeedit = (e) => {
           const { name, value } = e.target;
-          setSelectedBooking(prev => ({
-            ...prev,
-            [name]: value
-          }));
           
           if (name === 'scheduleId') {
-
-            console.log("scheduleList", scheduleList[0]);
-            console.log("value", value);
-            console.log("selectedBooking Db ID ", selectedBooking.scheduleDbId);
-            const selectedSchedule = scheduleList.find(s => s._id === value);
+            const selectedSchedule = scheduleList.find(s => s.scheduleId === value);
             if (selectedSchedule) {
               const totalSeats = selectedSchedule.bus.seat;
               const bookedSeats = selectedSchedule.bookedSeats;
@@ -436,50 +417,64 @@ const BookingList = () => {
               
               setSelectedBooking(prev => ({
                 ...prev,
+                scheduleId: value,
+                schedule_id: selectedSchedule._id, // Store MongoDB _id
                 routeName: selectedSchedule.route.name,
                 seatPrice: selectedSchedule.seatPrice
               }));
+              return;
             }
           }
+          
+          setSelectedBooking(prev => ({
+            ...prev,
+            [name]: value
+          }));
         };
-       
 
-        //update booking
 
-        const updateBooking = async () => {
+         const updateBooking = async () => {
           try {
-
-            console.log("selectedBooking:", selectedBooking);
+            console.log("Selected booking before update:", selectedBooking);
+            
+            if (!selectedBooking.booking_id || !selectedBooking.schedule_id) {
+              throw new Error('Required booking or schedule ID is missing');
+            }
+            
             const booking = {
-              id: selectedBooking._id, 
-              scheduleId: selectedBooking.scheduleDbId,
-              commuterId: selectedBooking.commuterDbId, 
-              seats: selectedBooking.seats,
+              id: selectedBooking.booking_id,  
+              scheduleId: selectedBooking.schedule_id, 
+              commuterId: selectedBooking.commuterId,
+              seats: parseInt(selectedBooking.seats),
               paySlipNumber: selectedBooking.paySlipNumber,
             };
-
-            
         
+            console.log("Sending update request with data:", booking);
             const updatedData = await updateBookingAPI(booking);
-            console.log("response",updatedData)
-            showToastMessage('Booking updated successfully!', 'success'); 
-            closeModaledit(); 
-            refreshBookings();
+            console.log("Update response:", updatedData);
+            
+            showToastMessage('Booking updated successfully!', 'success');
+            closeModaledit();
+            fetchAllBookings();
           } catch (error) {
             console.error('Error updating booking:', error.message);
-            showToastMessage(`Error: ${error.message}`, 'error'); 
+            showToastMessage(`Error: ${error.message}`, 'error');
           }
-        };
-        
-        
+        };   
 
-        // Modal close function
         const closeModaledit = () => {
           setIsModalOpen(false);
-          setSelectedBooking(null);
-          setSelectedPrice('');
-          setAvailableSeats('');
+          setSelectedBooking({
+            bookingId: '',
+            scheduleId: '',
+            commuterName: '',
+            commuterId: '',
+            seats: '',
+            paySlipNumber: '',
+            routeName: ''
+          });
         };
+       
   return (
     <div className="container">
       <Sidebar />
@@ -517,9 +512,7 @@ const BookingList = () => {
                   <td>{booking.scheduleData.scheduleId}</td>
                   <td>{booking.seats}</td>
                   <td>
-                    <button className="edit-btn" onClick={() => openModal(booking)}>
-                      Edit
-                    </button>
+                    
                     <button
                       className="delete-btn"
                       onClick={() => handleDeletec(booking)}
@@ -542,7 +535,7 @@ const BookingList = () => {
       {/* Operator table */}
   	  {isOperator && (
       <div className="table-containerb">
-        <h1>p List</h1>
+        <h1>Booking List</h1>
         <button className="add-booking-btn" onClick={openAddModal}> Add New Booking </button>
          <table className="booking-table">
           <thead>
@@ -591,100 +584,100 @@ const BookingList = () => {
         </div>
       )}
 
-        {/* Edit Modal for operator */}
-        {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h2>Edit Booking</h2>
-            <form>
-              {/* Schedule Dropdown */}
-              <div className="modal-field">
-                <label>Schedule</label>
-                <select 
-                  name="scheduleId"
-                  value={selectedBooking.scheduleDbId}
-                  onChange={handleInputChangeedit}>
-                  {Array.isArray(scheduleList) && scheduleList.map(schedule => (
-                    <option key={schedule._id} value={schedule.scheduleId}>
-                      
-                      {schedule.scheduleId} - {schedule.route?.name || ""}
-                    </option>
-                  ))}
-                </select>
+            {/* Edit Modal for operator */}
+            {isModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal-container">
+                <h2>Edit Booking</h2>
+                <form>
+                  {/* Schedule Dropdown */}
+                  <div className="modal-field">
+                    <label>Schedule</label>
+                    <select 
+                      name="scheduleId"
+                      value={selectedBooking.scheduleId}
+                      onChange={handleInputChangeedit}
+                    >
+                      {Array.isArray(scheduleList) && scheduleList.map(schedule => (
+                        <option key={schedule._id} value={schedule.scheduleId}>
+                          {schedule.scheduleId} - {schedule.route?.name || ""}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Commuter Dropdown */}
+                  <div className="modal-field">
+                    <label>Commuter</label>
+                    <select
+                      name="commuterId"
+                      value={selectedBooking.commuterId}
+                      onChange={handleInputChangeedit}
+                    >
+                      {commuterList.map(commuter => (
+                        <option key={commuter._id} value={commuter._id}>
+                          {commuter.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Available Seats */}
+                  <div className="modal-field">
+                    <label>Available Seats</label>
+                    <input
+                      type="text"
+                      value={availableSeats}
+                      readOnly
+                    />
+                  </div>
+
+                  {/* Price per Seat */}
+                  <div className="modal-field">
+                    <label>Price per Seat</label>
+                    <input
+                      type="text"
+                      value={selectedPrice}
+                      readOnly
+                    />
+                  </div>
+
+                  {/* Book Seats */}
+                  <div className="modal-field">
+                    <label>Book Seats</label>
+                    <input
+                      type="number"
+                      name="seats"
+                      value={selectedBooking.seats}
+                      onChange={handleInputChangeedit}
+                      max={availableSeats}
+                    />
+                  </div>
+
+                  {/* Pay Slip Number */}
+                  <div className="modal-field">
+                    <label>Pay Slip Number</label>
+                    <input
+                      type="text"
+                      name="paySlipNumber" 
+                      value={selectedBooking.paySlipNumber}
+                      onChange={handleInputChangeedit}
+                    />
+                  </div>
+                </form>
+
+                {/* Action Buttons */}
+                <div className="modal-actions">
+                  <button className="modal-update-btn" onClick={updateBooking}>
+                    Update
+                  </button>
+                  <button className="modal-cancel-btn" onClick={closeModaledit}>
+                    Cancel
+                  </button>
+                </div>
               </div>
-
-              {/* Commuter Dropdown */}
-              <div className="modal-field">
-                <label>Commuter</label>
-                <select
-                  name="commuterId"
-                  value={selectedBooking.commuterDbId}
-                  onChange={handleInputChangeedit}
-                >
-                  {commuterList.map(commuter => (
-                    <option key={commuter._id} value={commuter._id}>
-                      {commuter.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-        {/* Available Seats */}
-        <div className="modal-field">
-          <label>Available Seats</label>
-          <input
-            type="text"
-            value={availableSeats}
-            readOnly
-          />
-        </div>
-
-        {/* Price per Seat */}
-        <div className="modal-field">
-          <label>Price per Seat</label>
-          <input
-            type="text"
-            value={selectedPrice}
-            readOnly
-          />
-        </div>
-
-        {/* Book Seats */}
-        <div className="modal-field">
-          <label>Book Seats</label>
-          <input
-            type="number"
-            name="seats"
-            value={selectedBooking.seats}
-            onChange={handleInputChangeedit}
-            max={availableSeats}
-          />
-        </div>
-
-        {/* Pay Slip Number */}
-        <div className="modal-field">
-          <label>Pay Slip Number</label>
-          <input
-            type="text"
-            name="paySlipNumber" 
-            value={selectedBooking.paySlipNumber}
-            onChange={handleInputChangeedit}
-          />
-        </div>
-      </form>
-
-      {/* Action Buttons */}
-      <div className="modal-actions">
-        <button className="modal-update-btn" onClick={updateBooking}>
-          Update
-        </button>
-        <button className="modal-cancel-btn" onClick={closeModaledit}>
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            </div>
+    )}
 
 
         {/* Add New Booking Modal for commuter */}
@@ -766,105 +759,105 @@ const BookingList = () => {
           </div>
         )}
 
+          {/* Add booking operator */}
+          {isAddModalOpen && isOperator && (
+            <div className="modal-overlay">
+              <div className="modal-container">
+                <h2>Add New Booking</h2>
+                <form onSubmit={addOperatorSubmit}>  
+                <div className="modal-field">
+                    <label>Commuter ID</label>
+                    <select 
+                      name="commuterId"
+                      className="form-control" 
+                      value={bookingDetails.commuterId}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select Commuter</option>
+                      {Array.isArray(commuters) && commuters.map((commuter) => (
+                        <option key={commuter._id} value={commuter._id}>
+                          {commuter.email} - {commuter.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-{isAddModalOpen && isOperator && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      <h2>Add New Booking</h2>
-      <form onSubmit={addOperatorSubmit}>  
-      <div className="modal-field">
-          <label>Commuter ID</label>
-          <select 
-            name="commuterId"
-            className="form-control" 
-            value={bookingDetails.commuterId}
-            onChange={handleInputChange}
-          >
-            <option value="">Select Commuter</option>
-            {Array.isArray(commuters) && commuters.map((commuter) => (
-              <option key={commuter._id} value={commuter._id}>
-                {commuter.email} - {commuter.name}
-              </option>
-            ))}
-          </select>
-        </div>
+                  <div className="modal-field">
+                    <label>Bus Schedule</label>
+                    <select 
+                      className="form-control" 
+                      onChange={(e) => handleScheduleChange(e.target.value)}
+                    >
+                      <option value="">Select Schedule</option>
+                      {Array.isArray(schedules) && schedules.map((schedule) => (
+                        <option key={schedule._id} value={schedule._id}>
+                          {schedule.startTime ? new Date(schedule.startTime).toLocaleTimeString() : "Not Available"} -
+                          {schedule.endTime ? new Date(schedule.endTime).toLocaleTimeString() : "Not Available"}
+                          ({schedule.route.name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-        <div className="modal-field">
-          <label>Bus Schedule</label>
-          <select 
-            className="form-control" 
-            onChange={(e) => handleScheduleChange(e.target.value)}
-          >
-            <option value="">Select Schedule</option>
-            {Array.isArray(schedules) && schedules.map((schedule) => (
-              <option key={schedule._id} value={schedule._id}>
-                {schedule.startTime ? new Date(schedule.startTime).toLocaleTimeString() : "Not Available"} -
-                {schedule.endTime ? new Date(schedule.endTime).toLocaleTimeString() : "Not Available"}
-                ({schedule.route.name})
-              </option>
-            ))}
-          </select>
-        </div>
+                  <div className="modal-field">
+                    <label>Available Seat</label>
+                    <input
+                      type="text"
+                      placeholder="Available seat"
+                      value={selectedAvailability}
+                      disabled
+                    />
+                  </div>
 
-        <div className="modal-field">
-          <label>Available Seat</label>
-          <input
-            type="text"
-            placeholder="Available seat"
-            value={selectedAvailability}
-            disabled
-          />
-        </div>
+                  <div className="modal-field">
+                  <label>Seat</label>
+                  <input 
+                    type="number"
+                    name="seats"
+                    placeholder="Enter number of seat"
+                    value={bookingDetails.seats}
+                    onChange={(e) => handleInputChange(e)}
+                    min="1"
+                    max={selectedAvailability}
+                  />
+                </div>
 
-        <div className="modal-field">
-        <label>Seat</label>
-        <input 
-          type="number"
-          name="seats"
-          placeholder="Enter number of seat"
-          value={bookingDetails.seats}
-          onChange={(e) => handleInputChange(e)}
-          min="1"
-          max={selectedAvailability}
-        />
-      </div>
+                  <div className="modal-row">
+                    <div className="modal-field">
+                      <label>Price</label>
+                      <div className="price-display">{selectedPrice || "Not Available"}</div>
+                    </div>
+                    <div className="modal-field">
+                      <label>Pay Slip Number</label>
+                      <input
+                        type="text"
+                        name="paySlipNumber"
+                        value={bookingDetails.paySlipNumber}
+                        onChange={handleInputChange}
+                        placeholder="Enter Pay Slip Number"
+                      />
+                    </div>
+                  </div>
 
-        <div className="modal-row">
-          <div className="modal-field">
-            <label>Price</label>
-            <div className="price-display">{selectedPrice || "Not Available"}</div>
-          </div>
-          <div className="modal-field">
-            <label>Pay Slip Number</label>
-            <input
-              type="text"
-              name="paySlipNumber"
-              value={bookingDetails.paySlipNumber}
-              onChange={handleInputChange}
-              placeholder="Enter Pay Slip Number"
-            />
-          </div>
-        </div>
-
-        <div className="modal-actions">
-        <button 
-            type="submit"  
-            className="modal-add-btn" 
-          >
-            Add Booking
-          </button>
-          <button
-            type="button"
-            className="modal-cancel-btn"
-            onClick={closeAddModal}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
+                  <div className="modal-actions">
+                  <button 
+                      type="submit"  
+                      className="modal-add-btn" 
+                    >
+                      Add Booking
+                    </button>
+                    <button
+                      type="button"
+                      className="modal-cancel-btn"
+                      onClick={closeAddModal}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
 
    {/* Delete Confirmation Dialog */}
    {deleteDialogc && (

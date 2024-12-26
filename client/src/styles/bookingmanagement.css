@@ -23,7 +23,8 @@
     border-radius: 4px;
     cursor: pointer;
     margin-bottom: 20px;
-    margin-left: 854px;
+    margin-left: 898px;
+    margin-right: -132px;
   }
   
   /* Table Styling */
@@ -71,8 +72,8 @@
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
     padding: 20px;
+    overflow-y: auto;
     margin-left: 36px;
     color: black;
     margin-top: 100px;
@@ -219,6 +220,7 @@
   width: 300px;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color: black;
 }
 
 .dialog-actions {

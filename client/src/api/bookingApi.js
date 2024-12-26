@@ -12,7 +12,7 @@ export const getAllBooking = async () => {
     }
   };
 
-  export const getAllCommuter = async () => {
+  export const getCommuter = async () => {
     try {
       const response = await axiosInstance.get(`bookingManagement/getAllCommuters`);  
       return response.data;
@@ -57,14 +57,21 @@ export const getAllBooking = async () => {
   };
 
 
-
- // Update a schedule
- export const updateBookingAPI = async (booking) => {
-  try {
-    const response = await axiosInstance.post('bookingManagement/updateBooking', {id: booking._id,  scheduleId: booking.scheduleId, 
-      commuterId: booking.commuterId, seats: booking.seats , paySlipNumber: booking.paySlipNumber});
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: 'An error occurred.' };
-  }
-};
+  export const updateBookingAPI = async (booking) => {
+    try {
+      if (!booking.id || !booking.scheduleId) {
+        throw new Error('Required IDs are missing');
+      }
+  
+      const response = await axiosInstance.post('bookingManagement/updateBooking', {
+        id: booking.id,
+        scheduleId: booking.scheduleId,
+        commuterId: booking.commuterId,
+        seats: booking.seats,
+        paySlipNumber: booking.paySlipNumber
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'An error occurred.' };
+    }
+  };
