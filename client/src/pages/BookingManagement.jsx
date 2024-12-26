@@ -38,6 +38,7 @@ const BookingList = () => {
       const [formData, setFormData] = useState({ seats: '', paySlipNumber: '', scheduleId: '', commuterId: '' });
       const [isCommuter, setIsCommuter] = useState(false);
       const [isOperator, setIsOperator] = useState(false);
+      const [isAdmin, setIsAdmin] = useState(false);
       const [commuters, setCommuters] = useState([]);
       const [bookingDetails, setBookingDetails] = useState({ commuterId: '', scheduleId: '', seats: '', paySlipNumber: '' });
       const [availableSeats, setAvailableSeats] = useState(0);
@@ -57,8 +58,9 @@ const BookingList = () => {
             setUserData(response.user);
             const userRole = response.user.role;
 
-            if (userRole === 'operator') {
+            if (userRole === 'operator'|| 'admin') {
               setIsOperator(true); 
+              setIsAdmin(true); 
               await fetchAllBookings();
             } else if (userRole === 'commuter') {
               setIsCommuter(true); 
@@ -534,7 +536,7 @@ const BookingList = () => {
       )}
 
       {/* Operator table */}
-  	  {isOperator && (
+  	  {isOperator && isAdmin &&(
       <div className="table-containerb">
         <h1>Booking List</h1>
         <button className="add-booking-btn" onClick={openAddModal}> Add New Booking </button>
@@ -752,7 +754,7 @@ const BookingList = () => {
         )}
 
           {/* Add booking operator */}
-          {isAddModalOpen && isOperator && (
+          {isAddModalOpen && isOperator && isAdmin && (
             <div className="modal-overlay">
               <div className="modal-container">
                 <h2>Add New Booking</h2>
