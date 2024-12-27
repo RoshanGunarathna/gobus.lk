@@ -55,6 +55,11 @@ export default function Signup() {
     setFormData({ ...formData, [name]: value });
   };
 
+
+  const handleLogin = async (e) => {
+    navigate("/login");
+  };
+
   return (
     <div className="container-login">
       <div className="left-section">
@@ -95,9 +100,22 @@ export default function Signup() {
           />
           {errors.password && <p className="error-text">{errors.password}</p>}
 
+
           <p className="account-text">
-            Already have an account? <Link to="/"><span className="color">Login</span></Link>
+          Already have an account?{" "}
+            <span
+              onClick={handleLogin}
+              style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+            >
+              Login
+            </span>
           </p>
+
+
+          {/* <p className="account-text">
+            Already have an account? <Link to="/"><span className="color">Login</span></Link>
+          </p> */}
+
           {errors.general && <p className="error-text">{errors.general}</p>}
           <button type="submit" className="button">Sign Up</button>
         </form>
