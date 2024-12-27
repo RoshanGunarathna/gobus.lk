@@ -4,9 +4,9 @@
     "description": "A Node.js backend for gobus.lk",
     "main": "src/server.js",
     "scripts": {
-        "postinstall": "cd ../client && npm install && npm run build",
         "start": "node src/index.js",
-        "dev": "nodemon src/index.js"
+        "dev": "nodemon src/index.js",
+        "build": "node src/index.js"
     },
     "author": "Your Name",
     "license": "MIT",

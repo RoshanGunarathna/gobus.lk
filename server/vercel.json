@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "npm install && npm install && npm run build",
+  "builds" : [
+    {"src":"index.js", "use": "@vercel/node"}
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
+}
+
+
+
+
