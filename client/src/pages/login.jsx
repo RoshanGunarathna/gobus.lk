@@ -53,14 +53,20 @@ const Login = () => {
     if (window.toastTimeout) {
       clearTimeout(window.toastTimeout);
     }
-    
+
     setToastMessage(message);
     setShowToast(true);
-    
+    // Set new timeout
+
     window.toastTimeout = setTimeout(() => {
       setShowToast(false);
       setToastMessage('');
     }, 3000);
+  };
+
+
+  const handleSignUp = async (e) => {
+    navigate("/signup");
   };
 
   return (
@@ -89,11 +95,18 @@ const Login = () => {
             required
             className="input"
           />
+
           <p className="signup-text">
-            You do not have an account? <a href="/signup">Sign Up</a>
+            You do not have an account?{" "}
+            <span
+              onClick={handleSignUp}
+              style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+            >
+              Sign Up
+            </span>
           </p>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="button"
             disabled={loading}
           >
