@@ -58,15 +58,15 @@ const BookingList = () => {
             setUserData(response.user);
             const userRole = response.user.role;
 
-            if (userRole === 'operator'|| 'admin') {
-              setIsOperator(true); 
-              setIsAdmin(true); 
+            if (userRole === 'operator' || userRole === 'admin') {
+              setIsOperator(true);
+              setIsAdmin(true);
               await fetchAllBookings();
-            } else if (userRole === 'commuter') {
-              setIsCommuter(true); 
+          } else if (userRole === 'commuter') {
+              setIsCommuter(true);
               setFormData(prevState => ({ ...prevState, commuterId: response.user._id }));
               await fetchUserBookings(response.user._id);
-            }
+          }
 
           } catch (error) {
             const errorMessage = error.response?.data?.message || error.message || 'Error fetching data';
@@ -536,7 +536,7 @@ const BookingList = () => {
       )}
 
       {/* Operator table */}
-  	  {isOperator && isAdmin &&(
+  	  {(isOperator || isAdmin ) &&(
       <div className="table-containerb">
         <h1>Booking List</h1>
         <button className="add-booking-btn" onClick={openAddModal}> Add New Booking </button>
@@ -754,7 +754,7 @@ const BookingList = () => {
         )}
 
           {/* Add booking operator */}
-          {isAddModalOpen && isOperator && isAdmin && (
+          {isAddModalOpen && (isOperator || isAdmin) && (  
             <div className="modal-overlay">
               <div className="modal-container">
                 <h2>Add New Booking</h2>
