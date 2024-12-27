@@ -1,3 +1,4 @@
+// Login.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +26,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      // dispatch(loading());
       const user = await login(email, password);
       const userData = {
         id: user._id,
@@ -34,27 +34,30 @@ const Login = () => {
         role: user.role,
       };
 
-      navigate("/dashboard");
-
-      // Update Redux store directly
+      // Update Redux store first
       dispatch(updateUser(userData));
+
+      // Navigate based on user role
+      if (user.role === 'commuter') {
+        navigate("/booking-management");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.error('Login Error:', err);
-      //dispatch(loginFailure(err.message || 'Login failed'));
       showToastMessage(err.message || 'Login failed. Please check your credentials.');
     }
   };
 
   const showToastMessage = (message) => {
-    // Clear any existing timeouts
     if (window.toastTimeout) {
       clearTimeout(window.toastTimeout);
     }
 
     setToastMessage(message);
     setShowToast(true);
-
     // Set new timeout
+
     window.toastTimeout = setTimeout(() => {
       setShowToast(false);
       setToastMessage('');
