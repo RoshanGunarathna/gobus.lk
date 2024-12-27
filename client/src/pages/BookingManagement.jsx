@@ -58,6 +58,8 @@ const BookingList = () => {
             setUserData(response.user);
             const userRole = response.user.role;
 
+            
+
             if (userRole === 'operator' || userRole === 'admin') {
               setIsOperator(true);
               setIsAdmin(true);
@@ -82,6 +84,7 @@ const BookingList = () => {
           const bookingsResponse = await getAllBooking();
           console.log("bookingsResponse",bookingsResponse);
           setBookings(bookingsResponse.bookings);
+
           
         } catch (err) {
           const errorMessage = err.response?.data?.message || err.message || 'An unexpected error occurred';
@@ -477,6 +480,13 @@ const BookingList = () => {
             routeName: ''
           });
         };
+
+
+        const formatDate = (isoString) => {
+          const date = new Date(isoString);
+          return date.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        };
+        
        
   return (
     <div className="container">
@@ -494,11 +504,10 @@ const BookingList = () => {
               <th>Booking ID</th>
               <th>Start</th>
               <th>End</th>
-              <th>Route ID</th>
               <th>Route Name</th>
-              <th>Bus Number</th>
-              <th>Schedule ID</th>
               <th>Seat</th>
+              <th>Bus Number</th>
+              <th>slip Number</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -509,11 +518,10 @@ const BookingList = () => {
                   <td>{booking.bookingId}</td>
                   <td>{new Date(booking.scheduleData.startTime).toLocaleString()}</td>
                   <td>{new Date(booking.scheduleData.endTime).toLocaleString()}</td>
-                  <td>{booking.scheduleData.route.routeId}</td>
                   <td>{booking.scheduleData.route.name}</td>
-                  <td>{booking.scheduleData.bus.number}</td>
-                  <td>{booking.scheduleData.scheduleId}</td>
                   <td>{booking.seats}</td>
+                  <td>{booking.scheduleData.bus.number}</td>
+                  <td>{booking.paySlipNumber}</td>
                   <td>
                     
                     <button
@@ -545,7 +553,7 @@ const BookingList = () => {
             <tr>
               <th>Booking ID</th>
               <th>Schedule ID</th>
-              <th>Commuter name</th>  
+              <th>Commuter Email</th>  
               <th>Book Date</th>
               <th>Route Name</th>
               <th>Seat</th>
@@ -559,8 +567,8 @@ const BookingList = () => {
                 <tr key={booking._id}>
                   <td>{booking.bookingId}</td>
                   <td>{booking.scheduleData.scheduleId}</td>
-                  <td>{booking.commuterData.name}</td>
-                  <td>{booking.addedDate}</td>
+                  <td>{booking.commuterData.email}</td>
+                  <td>{formatDate(booking.addedDate)}</td>
                   <td>{booking.scheduleData.route.name}</td>
                   <td>{booking.seats}</td>
                   <td>{booking.paySlipNumber}</td>
