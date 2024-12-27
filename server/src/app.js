@@ -18,6 +18,10 @@ require('dotenv').config(); // Load environment variables
 const CustomError = require('./utils/customError');
 
 
+const path = require('path');
+const axios = require('axios');
+
+
 const app = express();
 
 // Connect to database
@@ -31,6 +35,7 @@ app.use(cookieParser()); // Parse cookies
 const allowedOrigins = process.env.ALLOWED_ORIGINS
 ? process.env.ALLOWED_ORIGINS.split(',') // Convert comma-separated string to array
 : [];
+
 
 
 // CORS configuration
@@ -48,8 +53,11 @@ app.use(
             }
         },
         credentials: true, // Allow cookies
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
+
 
 
 // Security middleware
@@ -64,6 +72,25 @@ app.use(
         legacyHeaders: false, // Disable `X-RateLimit-*` headers
     })
 );
+
+
+// Serve the static files from the React app
+// app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// // Handle requests by serving index.html for all routes
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
+// });
+
+// API endpoint
+// app.use('/api/products', async (req, res) => {
+//     const response = await axios.get('https://fakestoreapi.com/products');
+//     res.send(response.data);
+// });
+
+app.get('/',(req, res) => {
+    res.send("Welcome to the GoBus.LK API!");
+});
 
 // Routes
 app.use('/api/auth', authRoutes); // Authentication-related routes

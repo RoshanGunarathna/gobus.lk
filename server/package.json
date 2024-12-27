@@ -4,12 +4,14 @@
     "description": "A Node.js backend for gobus.lk",
     "main": "src/server.js",
     "scripts": {
-        "start": "node src/server.js",
-        "dev": "nodemon src/server.js"
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "build": "node src/index.js"
     },
     "author": "Your Name",
     "license": "MIT",
     "dependencies": {
+        "axios": "^1.7.9",
         "bcryptjs": "^2.4.3",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
@@ -22,9 +24,15 @@
         "mongoose": "^7.8.0",
         "morgan": "^1.10.0",
         "nanoid": "^5.0.9",
+        "path": "^0.12.7",
         "winston": "^3.17.0"
     },
     "devDependencies": {
         "nodemon": "^3.1.4"
+    },
+
+    "engines": {
+    "node":  "22.x"
     }
+
 }
