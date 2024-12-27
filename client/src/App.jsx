@@ -13,7 +13,6 @@ import BookingManagement from "./pages/BookingManagement";
 import ProfileManagement from "./pages/profileManagement";
 import { useEffect } from "react";
 import './App.css';
-import { HashRouter as Router } from "react-router-dom";
 
 
 
