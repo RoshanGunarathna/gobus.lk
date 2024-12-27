@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDashboardData,} = require('../controllers/dashboardController');
+const { getDashboardDataForAdmin, getDashboardDataForOperator} = require('../controllers/dashboardController');
  const {protect} = require('../middlewares/authMiddleware');
 
 
@@ -7,6 +7,7 @@ const router = express.Router();
 
 // "admin", "operator", "commuter"
 
-router.get("/getDashboardData", protect(["admin", "operator"]),getDashboardData);
+router.get("/getDashboardDataForAdmin", protect(["admin"]),getDashboardDataForAdmin);
+router.get("/getDashboardDataForOperator", protect(["admin", "operator"]),getDashboardDataForOperator);
 
 module.exports = router;
