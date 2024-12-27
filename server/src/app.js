@@ -53,6 +53,8 @@ app.use(
             }
         },
         credentials: true, // Allow cookies
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
 
@@ -73,12 +75,12 @@ app.use(
 
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../../client/dist')));
+// app.use(express.static(path.join(__dirname, '../../client/dist')));
 
-// Handle requests by serving index.html for all routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
-});
+// // Handle requests by serving index.html for all routes
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
+// });
 
 // API endpoint
 // app.use('/api/products', async (req, res) => {
