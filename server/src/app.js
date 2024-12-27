@@ -88,6 +88,10 @@ app.use(
 //     res.send(response.data);
 // });
 
+app.get('/',(req, res) => {
+    res.send("Welcome to the GoBus.LK API!")
+});
+
 // Routes
 app.use('/api/auth', authRoutes); // Authentication-related routes
 app.use('/api/user', userRoutes);
