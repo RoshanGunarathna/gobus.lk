@@ -16,7 +16,7 @@
       "dest": "client/dist/index.html"
     }
   ],
-  "outputDirectory": "client/dist"
+  "outputDirectory": "dist"
 }
 
 
