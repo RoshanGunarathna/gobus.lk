@@ -31,10 +31,12 @@ function Sidebar() {
       case 'admin':
         return [
           { path: '/dashboard', label: 'Dashboard', icon: 'https://i.imgur.com/0o5A9BX.png' },
+          { path: '/booking-management', label: 'Booking Management', icon: 'https://i.imgur.com/VPo06lE.png' },
           { path: '/user-management', label: 'User Management', icon: 'https://i.imgur.com/wwPh09a.png' },
           { path: '/route-management', label: 'Route Management', icon: 'https://i.imgur.com/eq8qfsn.png' },
           { path: '/schedules-management', label: 'Schedules Management', icon: 'https://i.imgur.com/41jSlMi.png' },
           { path: '/bus-management', label: 'Bus Management', icon: 'https://i.imgur.com/0fyGwPD.png' },
+
         ];
       case 'operator':
         return [

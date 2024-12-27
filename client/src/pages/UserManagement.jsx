@@ -119,8 +119,37 @@ function UserManagement() {
     }
   };
 
-  console.log('Current state - loggedInUserId:', loggedInUserId);
-  console.log('Current state - users:', users);
+  const renderActionButtons = (user) => {
+    if (user.role === 'admin') {
+      if (user._id === loggedInUserId) {
+        return (
+          <button
+            className="edit-button"
+            onClick={() => handleEditClick(user)}
+          >
+            Edit
+          </button>
+        );
+      }
+      return <span className="no-access">Don't have access</span>;
+    }
+    return (
+      <>
+        <button
+          className="edit-button"
+          onClick={() => handleEditClick(user)}
+        >
+          Edit
+        </button>
+        <button
+          className="delete-button"
+          onClick={() => handleDeleteClick(user)}
+        >
+          Delete
+        </button>
+      </>
+    );
+  };
 
   return (
     <div className="container">
@@ -154,20 +183,7 @@ function UserManagement() {
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEditClick(user)}
-                    >
-                      Edit
-                    </button>
-                    {user._id !== loggedInUserId && (
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDeleteClick(user)}
-                      >
-                        Delete
-                      </button>
-                    )}
+                    {renderActionButtons(user)}
                   </td>
                 </tr>
               ))}

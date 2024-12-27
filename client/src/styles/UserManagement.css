@@ -237,7 +237,11 @@ tbody tr:hover {
   padding: 20px;
 
 }
-
+.no-access {
+  color: #999;
+  font-style: italic;
+  font-size: 13px;
+}
 
 @keyframes fade-in-out {
   0% {
