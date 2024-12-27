@@ -755,7 +755,7 @@ const BookingList = () => {
 
           {/* Add booking operator */}
           {isAddModalOpen && (isOperator || isAdmin) && (  
-            <div className="modal-overlay">
+             <div className="modal-overlay">
               <div className="modal-container">
                 <h2>Add New Booking</h2>
                 <form onSubmit={addOperatorSubmit}>  
