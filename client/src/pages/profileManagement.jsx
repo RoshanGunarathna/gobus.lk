@@ -1,7 +1,7 @@
 // components/ProfileManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/profilemanagement.css';
+import '../styles/profileManagement.css';
 import Sidebar from '../components/Sidebar';
 import { fetchUserApi, updateUserApi, deleteUserApi } from '../api/getUserApi';
 import { logout } from '../api/authApi'; 
