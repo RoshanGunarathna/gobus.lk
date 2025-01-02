@@ -695,9 +695,15 @@ const BookingList = () => {
                   <label>Bus Schedule</label>
                   <select className="form-control" onChange={(e) => handleScheduleChangec(e.target.value)}>
                     <option value="">Select Schedule</option>
-                    {Array.isArray(schedules) && schedules.map((schedule) => (
+                    {/* {Array.isArray(schedules) && schedules.map((schedule) => (
                       <option key={schedule._id} value={schedule._id}>
-                        {schedule.scheduleId} - {new Date(schedule.startTime).toLocaleTimeString()}
+                        {schedule.scheduleId} - {new Date(schedule.startTime).toLocaleTimeString()} */}
+
+                        {Array.isArray(schedules) && schedules.map((schedule) => (
+                        <option key={schedule._id} value={schedule._id}>
+                          {schedule.startTime ? new Date(schedule.startTime).toLocaleTimeString() : "Not Available"} -
+                          {schedule.endTime ? new Date(schedule.endTime).toLocaleTimeString() : "Not Available"}
+                          ({schedule.route.name})
                       </option>
                     ))}
                   </select>

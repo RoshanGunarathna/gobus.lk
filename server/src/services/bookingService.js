@@ -17,7 +17,9 @@ const isBookingExist = async (bookingId) => {
 const addABooking = async (data) => {
   try {
  
-
+    if (!data.body.seats || data.body.seats<= 0) {
+      throw new CustomError("Booking failed: Add at lease one seat", 404);
+    }
 
     const schedule = await Schedule.findById(data.body.scheduleId).select('-__v');
 
@@ -57,7 +59,7 @@ const addABooking = async (data) => {
 
     await Booking.create(booking);
 
-    await Schedule.findByIdAndUpdate(data.scheduleId, {bookedSeats : newBookedSeats}, {
+    await Schedule.findByIdAndUpdate(data.body.scheduleId, {bookedSeats : newBookedSeats}, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validators on the update
     });

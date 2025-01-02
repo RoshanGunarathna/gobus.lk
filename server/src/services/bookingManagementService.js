@@ -151,6 +151,8 @@ const updateBookingById = async (data) => {
     }
 
 
+
+
     const booking = {
       seats: data.seats,
       paySlipNumber: data.paySlipNumber,
@@ -196,7 +198,12 @@ const deleteBookingById = async (id) => {
     const schedule = await Schedule.findById(booking.scheduleId).select('-__v');
      
     if (schedule) {
+      
+      
       const newBookedSeats = schedule.bookedSeats - booking.seats;
+
+    
+      newBookedSeats
       await Schedule.findByIdAndUpdate(schedule._id, {bookedSeats : newBookedSeats}, {
         new: true, // Return the updated document
         runValidators: true, // Run schema validators on the update
@@ -206,13 +213,12 @@ const deleteBookingById = async (id) => {
     
   
 
-
     const existingBooking = await Booking.findById(id);
     if (!existingBooking) {
       throw new CustomError("Booking not found!", 404);
     }
 
-    await Booking.findByIdAndDelete(id).select('-__v');
+     await Booking.findByIdAndDelete(id).select('-__v');
 
     return null;
   } catch (error) {
